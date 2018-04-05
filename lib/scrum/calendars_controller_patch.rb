@@ -31,7 +31,7 @@ module Scrum
 
         def query_sprints(sprints, query, calendar, start)
           date_field = start ? 'sprint_start_date' : 'sprint_end_date'
-          query.sprints.where(date_field => calendar.startdt..calendar.enddt,
+          query.sprints.includes(:issues).where(date_field => calendar.startdt..calendar.enddt,
                               is_product_backlog: false).each do |sprint|
             sprints << {:name => sprint.name,
                         :url => url_for(:controller => :sprints,
