@@ -1,0 +1,9 @@
+<%= render :partial => "common/scrum_editable_value",
+           :locals => {:title => l(:label_remaining_story_point_plural),
+                       :element_id => "remaining_story_points_#{pbi.id}",
+                       :value => pbi.remaining_story_points,
+                       :unit => l(:label_remaining_story_point_unit),
+                       :unit_title => l(:label_remaining_story_point_plural),
+                       :editable => (User.current.allowed_to?(:edit_issues, pbi.project) and
+                                     pbi.editable? and !read_only),
+                       :change_element_path => change_remaining_story_points_path(pbi)} %>

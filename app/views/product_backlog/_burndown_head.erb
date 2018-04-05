@@ -1,0 +1,10 @@
+<table class="box attributes" width="100%">
+  <%= render :partial => 'post_its/product_backlog/head',
+             :locals => {:product_backlog => product_backlog,
+                         :path => method(:burndown_product_backlog_path)} %>
+  <%= render :partial => 'scrum/velocity_form',
+             :locals => {:url => burndown_product_backlog_path(product_backlog),
+                         :sprints_count => sprints_count,
+                         :velocity => velocity,
+                         :velocity_type => velocity_type} %>
+</table>

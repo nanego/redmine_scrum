@@ -1,0 +1,14 @@
+<%- if User.current.allowed_to?(:view_pending_effort, project) or
+       User.current.allowed_to?(:edit_pending_effort, project) -%>
+  <%= render :partial => "common/scrum_editable_value",
+             :locals => {:project => project,
+                         :title => l(:field_pending_effort),
+                         :element_id => "pending_effort_#{task.id}",
+                         :value => task.pending_effort,
+                         :unit => "h",
+                         :unit_title => l(:field_pending_effort),
+                         :editable => (User.current.allowed_to?(:edit_sprint_board, project) and
+                                       User.current.allowed_to?(:edit_pending_effort, project) and
+                                       task.editable?),
+                         :change_element_path => change_pending_effort_path(task)} %>
+<%- end -%>

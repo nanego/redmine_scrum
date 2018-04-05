@@ -1,0 +1,25 @@
+<h2>Ayuda del burndown por PHs del Sprint</h2>
+
+<p>El burndown por PHs del Sprint muestra el progreso del equipo en puntos de
+historia. El valor puede ser imputado por los usuarios de manera precisa
+(v&iacute;a el campo de puntos de historia pendientes, que debe ser habilitado
+en <%= links[:plugin_settings] %>) o de manera menos precisa cuando cada EPP
+es completado.</p>
+
+<h3>Imputando PHs pendientes d&iacute;a a d&iacute;a</h3>
+
+<p>Cada miembro del equipo debe imputar los PHs pendientes d&iacute;a a
+d&iaute;a en los EPPs. Debido al hecho de que el plugin guarda en que
+d&iacute;a se registra cada valor de PHs pendientes, no olvides imputar dicho
+valor si quieres que el gr&aacute;fico del burndown sea preciso.</p>
+
+<h3>Entendiendo el burndown por PHs</h3>
+
+<p>La l&iacute;nea de PHs pendientes (o l&iacute;neas para equipos
+multi-proyecto) representa los PHs pendientes de los EPPs del Sprint d&iacute;a
+a d&iacute;a (esto no est&aacute; relacionado de ninguna manera con el campo
+de PHs del EPP, sin embargo normalemente los PHs pendientes del EPP suelen ser
+iguales al campo de PHs cuando se empieza a trabajar en el EPP).</p>
+
+<%= render :partial => 'help/burndown_multi_project',
+           :locals => {:links => links} %>

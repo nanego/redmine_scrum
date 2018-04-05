@@ -1,0 +1,7 @@
+<%= render :partial => "scrum/issue_attributes", :formats => [:html],
+           :locals => {:f => f, :issue => issue} %>
+
+<p class="buttons">
+  <%= submit_tag l(:button_edit), :name => "edit", :disable_with => l(:label_loading) %>
+  <%= submit_tag l(:button_cancel), :name => nil, :onclick => "hideModal(this);", :type => "button" %>
+</p>

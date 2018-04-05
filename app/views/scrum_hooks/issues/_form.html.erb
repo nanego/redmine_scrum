@@ -1,0 +1,22 @@
+<%- assignable_sprints = @issue.assignable_sprints -%>
+<%- if assignable_sprints.any? -%>
+  <div class="splitcontent">
+    <div class="splitcontentleft">
+      <p>
+        <%- selected = @issue.sprint ? @issue.sprint.id.to_s : nil -%>
+        <%= form.select :sprint_id,
+                        options_from_collection_for_select(assignable_sprints, 'id', 'name', selected),
+                        :include_blank => true %>
+      </p>
+    </div>
+    <%- if (@issue.is_task? or @issue.is_pbi?) and @issue.scrum? and
+        User.current.allowed_to?(:edit_pending_effort, @issue.project)-%>
+      <div class="splitcontentright">
+        <p>
+          <%= form.text_field :pending_effort, :size => 3,
+                              :label => @issue.is_pbi? ? l(:label_remaining_story_point_plural) : nil %>
+        </p>
+      </div>
+    <%- end -%>
+  </div>
+<%- end -%>

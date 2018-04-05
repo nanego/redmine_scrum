@@ -1,0 +1,11 @@
+<%- tips = scrum_tips -%>
+<%- unless tips.empty? -%>
+  <h3><%= l(:label_tip_title) %> <%= image_tag("help.png") %></h3>
+  <ul>
+    <%- tips.each do |tip| -%>
+      <li style="list-style: disc inside; margin-bottom: 0.5em;">
+        <%= raw(tip) %>
+      </li>
+    <%- end -%>
+  </ul>
+<%- end -%>

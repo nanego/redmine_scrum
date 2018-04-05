@@ -1,0 +1,15 @@
+<td width="250px">
+  <div class="tabular">
+    <p>
+      <label><%= l(:label_pbis_count) %>:</label>
+      <%= stats[:closed_pbis_count] %>/<%= stats[:total_pbis_count] %><br />
+
+      <label><%= l(:label_sps_count) %>:</label>
+      <%= stats[:closed_sps_count] %>/<%= stats[:total_sps_count] %><br />
+
+      <label><%= l(:label_percentage_closed_sps) %>:</label>
+      <%= number_to_percentage(stats[:closed_total_percentage],
+                               :precision => 1, :separator => '.') %>
+    </p>
+  </div>
+</td>

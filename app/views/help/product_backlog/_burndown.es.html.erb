@@ -1,0 +1,18 @@
+<h2>Ayuda del burndown de la pila de producto</h2>
+
+<p>El burndown de la pila de producto muestra el progreso del equipo en puntos
+de historia a lo largo de los Sprints y la preducci&oacute;n del progreso del
+equipo de los futuros Sprints.</p>
+
+<h3>Entendiendo el burndown</h3>
+
+<p>La l&iacute;nea (o l&iacute;neas en equipos multi-proyecto) representa los
+PHs pendientes de los EPPs del Sprint d&iacute;a a d&iacute;a (no tiene que
+ver de ning&uacute;n modo con el campo de PHs del EPP, sin embargo normalmente
+el primer valor de los PHs pendientes del EPP es igual a los PHs).</p>
+
+<%= render :partial => 'help/product_backlog/velocity_modes',
+           :locals => {:links => links} %>
+
+<%= render :partial => 'help/burndown_multi_project',
+           :locals => {:links => links} %>

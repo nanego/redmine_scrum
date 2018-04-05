@@ -1,0 +1,26 @@
+<%= back_url_hidden_field_tag %>
+<%= error_messages_for "sprint" %>
+
+<div class="box tabular">
+  <p><%= f.text_field :name, :size => 60, :required => true %></p>
+  <p><%= f.text_area :description, :rows => 8, :class => 'wiki-edit' %></p>
+  <%= wikitoolbar_for 'sprint_description' %>
+  <%- unless @sprint.is_product_backlog? -%>
+    <p>
+      <%= f.text_field :sprint_start_date, :size => 10, :required => true, :label => l(:field_start_date) %>
+      <%= calendar_for "sprint_sprint_start_date" %>
+    </p>
+    <p>
+      <%= f.text_field :sprint_end_date, :size => 10, :required => true, :label => l(:field_end_date) %>
+      <%= calendar_for "sprint_sprint_end_date" %>
+    </p>
+  <%- end -%>
+  <p><%= f.select :status,
+                  Sprint::SPRINT_STATUSES.collect { |status|
+                    [l("label_sprint_status_#{status}"), status]
+                  } %></p>
+  <p>
+    <%= f.check_box :shared, :label => l(:field_shared) %>
+    <em class="info"><%= l(:field_shared_note) %></em>
+  </p>
+</div>

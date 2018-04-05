@@ -1,0 +1,109 @@
+<div class="contextual scrum-menu">
+  <%= link_to(l(:button_back), project_path(@project), :class => 'icon icon-cancel') %>
+  <%= render_scrum_help %>
+</div>
+
+<h2>
+  <%= l(:label_scrum_stats) %>
+</h2>
+
+<% content_for :header_tags do %>
+  <%= javascript_include_tag "d3.#{Rails.env.development? ? '' : 'min.'}js", :plugin => 'scrum' %>
+  <%= javascript_include_tag 'xcharts.min.js', :plugin => 'scrum' %>
+  <%= javascript_include_tag "nv.d3.#{Rails.env.development? ? '' : 'min.'}js", :plugin => 'scrum' %>
+  <%= stylesheet_link_tag 'xcharts.min.css', :plugin => 'scrum' %>
+  <%= stylesheet_link_tag "nv.d3.#{Rails.env.development? ? '' : 'min.'}css", :plugin => 'scrum' %>
+<% end %>
+
+<h3 align="center">
+  <%= l(:label_closed_story_points) %>
+</h3>
+<div id="<%= @closed_story_points_per_sprint_chart[:id] %>">
+  <svg style="height: <%= @closed_story_points_per_sprint_chart[:height] %>px;">
+  </svg>
+</div>
+<%= render :partial => 'common/bar_chart',
+           :formats => [:js],
+           :locals => {:graph => @closed_story_points_per_sprint_chart,
+                       :element => {:label => l(:enumeration_activities), :name => :activity},
+                       :rows => @closed_story_points_per_sprint} %>
+
+<br />
+<br />
+
+<h3 align="center">
+  <%= l(:label_hours_per_story_point) %>
+</h3>
+<div id="<%= @hours_per_story_point_chart[:id] %>">
+  <svg style="height: <%= @hours_per_story_point_chart[:height] %>px;">
+  </svg>
+</div>
+<%= render :partial => 'common/bar_chart',
+           :formats => [:js],
+           :locals => {:graph => @hours_per_story_point_chart,
+                       :element => {:label => l(:enumeration_activities), :name => :activity},
+                       :rows => @hours_per_story_point} %>
+
+<br />
+<br />
+
+<h3 align="center">
+  <%= l(:label_sps_by_pbi_category) %>
+  (<%= l(:label_sprint_plural) %> + <%= l(:label_product_backlog) %>)
+</h3>
+<%- if @sps_by_pbi_category.count < 1 -%>
+    <p class="nodata"><%= l(:label_no_data) %></p>
+<%- else -%>
+    <%= render :partial => 'common/stat_graph_and_table',
+               :locals => {:graph => {:id => 'stats_sps_per_category', :width => 400, :height => 400},
+                           :element => {:label => l(:label_issue_category_plural), :name => :category},
+                           :unit => {:label => l(:label_story_point_unit), :plural_label => l(:label_story_point_plural)},
+                           :rows => @sps_by_pbi_category,
+                           :total => @sps_by_pbi_category_total} %>
+<%- end -%>
+
+<br />
+<br />
+
+<h3 align="center">
+  <%= l(:label_sps_by_pbi_type) %>
+  (<%= l(:label_sprint_plural) %> + <%= l(:label_product_backlog) %>)
+</h3>
+<%- if @sps_by_pbi_type.count < 1 -%>
+    <p class="nodata"><%= l(:label_no_data) %></p>
+<%- else -%>
+    <%= render :partial => 'common/stat_graph_and_table',
+               :locals => {:graph => {:id => 'stats_sps_per_pbi_type', :width => 400, :height => 400},
+                           :element => {:label => l(:label_tracker_plural), :name => :tracker},
+                           :unit => {:label => l(:label_story_point_unit), :plural_label => l(:label_story_point_plural)},
+                           :rows => @sps_by_pbi_type,
+                           :total => @sps_by_pbi_type_total} %>
+<%- end -%>
+
+<br />
+<br />
+
+<h3 align="center">
+  <%= l(:label_time_by_activity) %>
+  (<%= l(:label_sprint_plural) %>)
+</h3>
+<%- if @effort_by_activity.count < 1 -%>
+    <p class="nodata"><%= l(:label_no_data) %></p>
+<%- else -%>
+    <%= render :partial => 'common/stat_graph_and_table',
+               :locals => {:graph => {:id => 'stats_time_per_activity', :width => 400, :height => 400},
+                           :element => {:label => l(:enumeration_activities), :name => :activity},
+                           :unit => {:label => 'h', :plural_label => l(:label_time_entry_plural)},
+                           :rows => @effort_by_activity,
+                           :total => @effort_by_activity_total} %>
+<%- end -%>
+
+<% content_for :sidebar do %>
+  <%- if Redmine::VERSION::STRING < '3.4.0' -%>
+    <%= render :partial => 'projects/sidebar' %>
+  <%- else -%>
+    <%= call_hook(:view_projects_show_sidebar_bottom, :project => @project) %>
+  <%- end -%>
+<% end %>
+
+<%= render :partial => 'common/scrum_footer' %>

@@ -1,0 +1,52 @@
+<h2>Ayuda de la configuraci&oacute;n del plugin Scrum</h2>
+
+<p>Este plugin es altamente configurable, normalmente los valores por defecto
+est&aacute;n bien, pero algunos deben ser configurados antes de empezar a usar
+este plugin.</p>
+
+<h3>Pasos obligatorios/m&iacute;nimos</h3>
+
+<p>Normalmente configurar este plugin implica ejecutar varios pasos en la
+secci&oacute;n de administraci&oacute;n antes de empezar a configura el plugin
+en s&iacute; mismo:</p>
+<ol>
+  <li>Habilitar los permisos del plugin en <%= links[:permissions] %>.</li>
+  <li>Crear tipos de petici&oacute;n para los EPPs. Normalmente un tipo para
+  historias de usuario, otro para errores y otro para deuda t&eacute;cnica.
+  Cuanto menos mejor, as&iacute; que habilita solo los campos: categor&iacute;a,
+  versi&oacute;n prevista y descripci&oacute;n.</li>
+  <li>Crea un tipo de petici&oacute;n para tareas, normalmente con un tipo es
+  suficiente, pero est&aacute; bien si quieres crear varios. De nuevo menos es
+  m&aacute;s, as&iacute; que habilita s&oacute;lo estos campos: asignado,
+  petici&oacute;n padre, tiempo estimado y descripci&oacute;n.</li>
+  <li>Crea un campo de petici&oacute;n personalizado para los puntos de
+  historia: debe de ser un valor num&eacute;rico, entero o de punto flotante,
+  pero es mejor si usas una lista de valores similar a una secuencia de
+  Fibonacci como: 0, 0.5, 1, 2, 3, 5, 8, 13, 20, 40, 100.</li>
+</ol>
+
+<h3>Configurando los ajustes del plugin</h3>
+
+<p>Casi todos los valores son auto explicativos o incluyen descripciones para
+entenderlos.</p>
+
+<p>Varios valores son selecciones de m&uacute;ltiples valores, simplemente
+presiona CTRL (o CMD en MacOS) para seleccionar varios valores.</p>
+
+<p>Si no entiendes el prop&oacute;sito de algo y quieres probarlo, simplemente
+cambia un &uacute;nico valor y comprueba qu&eacute; ha cambiado en la vista
+relacionada.</p>
+
+<p><a href="https://redmine.ociotec.com/projects/redmine-plugin-scrum/boards/11"
+target="_blank">El foro de soporte del plugin</a> es tambi&eacute;n un buen
+lugar para preguntar si lo necesitas.</p>
+
+<h3>Pasos opcionales</h3>
+
+<ol>
+  <li>Crear un campo personalizado para peticiones para indicar si el EPP o
+  tarea est&aacute; bloquedo.</li>
+  <li>Crear un campo personalizado booleano para peticiones para indicar si
+  el EPP se permite estar solo en el tamblero del Sprint, es decir sin tareas
+  hijas.</li>
+</ol>

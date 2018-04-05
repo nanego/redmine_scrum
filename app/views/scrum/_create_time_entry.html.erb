@@ -1,0 +1,52 @@
+<h3 class="title"><%= l(:field_time_entries) %></h3>
+
+<div id="time-entry-messages" />
+
+<%= form_for :time_entry, :url => create_scrum_time_entry_path(@issue), :remote => true do |f| %>
+  <%= back_url_hidden_field_tag %>
+  <%= error_messages_for 'time_entry' %>
+  <%= hidden_field_tag :pbi_status_id, @pbi_status_id %>
+  <%= hidden_field_tag :other_pbi_status_ids, @other_pbi_status_ids %>
+  <%= hidden_field_tag :task_id, @task_id %>
+  <div class="box tabular">
+    <p>
+      <label><%= l(:field_hours) %>:</label>
+      <%= f.text_field :hours, :size => 15, :required => true %>
+    </p>
+
+    <p>
+      <label><%= l(:field_spent_on) %>:</label>
+      <%= f.text_field :spent_on, :size => 10, :value => Date.today, :required => true %>
+    </p>
+
+    <p>
+      <label><%= l(:field_comments) %>:</label>
+      <%= f.text_field :comments, :size => 15, :maxlength => 255 %>
+    </p>
+
+    <p>
+      <label><%= l(:field_activity) %>:</label>
+      <%= f.select :activity_id,
+                    @project.activities.collect{|activity| [activity.name, activity.id]},
+                    :required => true %>
+    </p>
+
+    <p>
+      <label><%= l(:field_user) %>:</label>
+      <%= f.select :user_id,
+                    principals_options_for_select(@issue.assignable_users, @issue.assigned_to),
+                    :required => true %>
+    </p>
+
+    <%- TimeEntry.new.custom_field_values.each do |value| -%>
+      <p>
+        <label><%= value.custom_field.name %>:</label>
+        <%= custom_field_tag :time_entry, value %>
+      </p>
+    <%- end -%>
+
+    <p>
+      <%= submit_tag l(:button_save) %>
+    </p>
+  </div>
+<% end %>

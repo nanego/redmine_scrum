@@ -1,0 +1,9 @@
+<%= javascript_tag do %>
+  $(document).ready(function() {
+    <%- link = link_to(l(:label_scrum), Redmine::Plugin::registered_plugins[:scrum].url)
+        author = Redmine::Plugin::registered_plugins[:scrum].author
+        copy_right = link_to("©", "http://creativecommons.org/licenses/by-nd/4.0/")
+        legend = "Powered by #{link} plugin #{copy_right} 2013-2015 #{author}" -%>
+    $("#footer").append('<div class="bgl"><div class="bgr"><%= raw legend %></div></div>');
+  });
+<% end %>

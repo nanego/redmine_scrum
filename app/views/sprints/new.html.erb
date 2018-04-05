@@ -1,0 +1,12 @@
+<div class="contextual scrum-menu"><%= render_scrum_help %></div>
+
+<h2><%= l(@sprint.is_product_backlog? ? :label_product_backlog_new : :label_sprint_new) %></h2>
+
+<%= labelled_form_for @sprint, :url => project_sprints_path(@project) do |f| %>
+  <%= back_url_hidden_field_tag %>
+  <%= render :partial => "sprints/form", :locals => {:f => f} %>
+  <%= hidden_field_tag :create_product_backlog, true if params[:create_product_backlog] %>
+  <%= submit_tag l(:button_create) %>
+<% end %>
+
+<%= render :partial => "common/scrum_footer" %>

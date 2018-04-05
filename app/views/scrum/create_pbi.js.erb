@@ -1,0 +1,39 @@
+<%- if @continue or defined?(@exception) -%>
+	<%- if defined?(@exception) -%>
+		<%- message = l(:error_creating_pbi, :message => @exception.message)
+				message_class = "error" -%>
+	<%- else -%>
+		$("#new_issue").each (function() {
+			this.reset();
+		});
+		<%- message = l(:notice_pbi_created)
+				message_class = "notice" -%>
+	<%- end -%>
+	$("#popup-messages").html("<div class=\"flash <%= message_class %>\"><%= message %></div>");
+<%- else -%>
+	$("#ajax-modal").dialog("close");
+<%- end -%>
+<%- if !defined?(@exception) -%>
+	if ($("#pbis").length > 0) {
+		<%- if @top -%>
+			$("#pbis").prepend("<%=
+				escape_javascript(render :partial => "post_its/product_backlog/pbi", :formats => [:html],
+																 :locals => {:project => @project, :pbi => @pbi, :read_only => false}).html_safe
+			%>");
+		<%- else -%>
+			$("#pbis").append("<%=
+				escape_javascript(render :partial => "post_its/product_backlog/pbi", :formats => [:html],
+																 :locals => {:project => @project, :pbi => @pbi, :read_only => false}).html_safe
+			%>");
+		<%- end -%>
+	} else if ($("#sprint_board").length > 0) {
+		$("#sprint_board").append("<%=
+			escape_javascript(render :partial => "post_its/sprint_board/pbi_row", :formats => [:html],
+															 :locals => {:project => @project, :pbi => @pbi,
+																					 :task_statuses => IssueStatus.task_statuses}).html_safe
+		%>");
+	}
+  <%- if (!(IssueStatus.pbi_statuses.include?(@pbi.status))) -%>
+    $("#<%= @pbi.sprint.is_product_backlog? ? "pbi_#{@pbi.id}" : "pbi_#{@pbi.id}_row" %>").remove();
+  <%- end -%>
+<%- end -%>

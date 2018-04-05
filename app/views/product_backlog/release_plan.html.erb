@@ -1,0 +1,49 @@
+<%= render :partial => 'common/scrum_backlog_menu' %>
+
+<h2>
+  <%= l(:label_release_plan) %>
+</h2>
+
+<table class="box attributes" width="100%">
+  <%= render :partial => 'post_its/product_backlog/head',
+             :locals => {:project => @project, :product_backlog => @product_backlog,
+                         :path => method(:release_plan_product_backlog_path)} %>
+  <%= render :partial => 'release_plan_head',
+             :locals => {:sprints_count => @sprints_count,
+                         :sps_per_sprint => @velocity,
+                         :default_sps_per_sprint => @default_velocity,
+                         :use_not_scheduled_pbis_for_velocity => @use_not_scheduled_pbis_for_velocity,
+                         :total_story_points => @total_story_points,
+                         :pbis_with_estimation => @pbis_with_estimation,
+                         :pbis_without_estimation => @pbis_without_estimation} %>
+</table>
+
+<%= render :layout => 'common/fullscreen_content' do %>
+  <table class="sprint-board">
+    <tr class="sprint-board">
+      <th class="sprint-board"><%= l(:label_sprint_plural) %></th>
+      <th class="sprint-board"><%= l(:label_version_plural) %></th>
+      <th class="sprint-board"><%= l(:label_pbi_plural) %></th>
+    </tr>
+    <%- @sprints.each_with_index do |sprint, index| -%>
+    <tr class="sprint-board">
+      <td class="sprint-board" align="center">
+        <%= "#{l(:field_sprint)} +#{index + 1}" %>
+      </td>
+      <td class="sprint-board">
+        <%= raw(sprint[:versions].collect{|version| link_to_version(version)}.join(", ")) %>
+      </td>
+      <td class="sprint-board">
+        <ul id="pbis" class="pbis">
+          <%- sprint[:pbis].each do |pbi| -%>
+          <%= render :partial => 'post_its/product_backlog/pbi',
+                     :locals => {:project => @project, :pbi => pbi, :read_only => true} %>
+          <%- end -%>
+        </ul>
+      </td>
+    </tr>
+    <%- end -%>
+  </table>
+<% end %>
+
+<%= render :partial => 'common/scrum_footer' %>

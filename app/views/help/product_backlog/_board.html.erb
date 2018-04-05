@@ -1,0 +1,44 @@
+<h2>Product backlog board help</h2>
+
+<h3>PBIs</h3>
+
+<p>A product backlog includes PBIs (Product Backlog Items). Typically they
+represent user stories, bugs, technical debts... Under
+<%= links[:plugin_settings] %> you can configure which issue trackers are
+considered PBIs.</p>
+
+<p>PBIs are listed in a sorted queue, where the top of the queue contains the
+PBIs that are going to be implemented by the team first.</p>
+
+<p>A lot of the described features are enabled only with permissions, so take a
+look to <%= links[:permissions] %> to enable/disable permissions for each
+role.</p>
+
+<h3>Working with PBIs</h3>
+
+<p>PBIs can be created in this board using the
+<i class="icon icon-add">links</i> at the begin of the board (if you want to
+create PBIs at the top of the queue) or at the end of the board (if you want
+to create PBIs at the bottom of the queue).</p>
+
+<p>Once you have PBIs on the product backlog, you can dragged in vertical
+to change their order (so the team will start with the ones before).
+You can also move them to the top/bottom of the queue using
+<i class="icon icon-move-top">move to top icon</i> and
+<i class="icon icon-move-bottom">move to bottom icon</i>.</p>
+
+<p>In the PBI post-it you will see its attributes (to enable more/less
+attributes take a look to <%= links[:plugin_settings] %>). You can edit them
+clicking on the <i class="icon icon-edit">pencil icon</i>.</p>
+
+<p>PBIs are estimated in story points (SPs), you can edit directly this value
+clicking on the SPs value and typing a new value (then press ENTER or TAB).
+If remaining story points is enabled (under <%= links[:plugin_settings] %>)
+then you will see that field also in the post-it, it's also editable.</p>
+
+<h3>Product backlog on multi-project teams</h3>
+
+<p>If you have several projects under the Scrum team project, and you assign
+PBIs &amp; tasks to those child projects (they should also have Scrum module
+enabled), then the product backlog could be filtered by subproject. If you
+filter the product backlog, sorting PBIs will not be permitted.</p>

@@ -1,0 +1,39 @@
+<table class="scrum-stats-chart-table">
+  <tr>
+    <td align="right">
+      <svg id="<%= graph[:id] %>"
+           style="width: <%= graph[:width] %>px; height: <%= graph[:height] %>px;">
+      </svg>
+    </td>
+    <td align="left">
+      <table class="scrum-stats-table">
+        <thead>
+        <tr>
+          <th align="left"><%= element[:label] %></th>
+          <th align="center"><%= unit[:plural_label] %></th>
+          <th align="center">%</th>
+        </tr>
+        </thead>
+        <tbody>
+        <%- rows.each do |row| -%>
+            <tr>
+              <td align="left"><%= row[element[:name]].nil? ? "---" : row[element[:name]] %></td>
+              <td align="center"><%= "#{row[:total].round(2)} #{unit[:label]}" %></td>
+              <td align="center"><%= "#{row[:percentage].round}%" %></td>
+            </tr>
+        <%- end -%>
+        <tr>
+          <td align="left" class="total"><%= l(:label_total) %></td>
+          <td align="center" class="total"><%= "#{total.round(2)} #{unit[:label]}" %></td>
+          <td align="center" class="total">100%</td>
+        </tr>
+        </tbody>
+      </table>
+    </td>
+  </tr>
+</table>
+<%= render :partial => "sprints/pie_chart",
+           :formats => [:js],
+           :locals => {:graph => graph,
+                       :element => element,
+                       :rows => rows} %>

@@ -1,0 +1,17 @@
+<%- if User.current.allowed_to?(:view_pending_effort, @issue.project) -%>
+  <div id="pending_effort" class="scrum-dialog"
+       title="<%= l(@issue.is_task? ? :field_pending_effort : :label_remaining_story_point_plural) %>">
+    <table align="center">
+      <tr>
+        <th><%= l(:field_effective_date) %></th>
+        <th><%= l(@issue.is_task? ? :field_hours : :label_remaining_story_point_plural) %></th>
+      </tr>
+      <%- issue.pending_efforts.each do |pending_effort| -%>
+        <tr>
+          <td align="center"><%= format_date(pending_effort.date) %></td>
+          <td align="center"><%= pending_effort.effort %></td>
+        </tr>
+      <%- end -%>
+    </table>
+  </div>
+<%- end -%>

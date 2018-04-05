@@ -1,0 +1,60 @@
+<%= render :partial => 'common/scrum_sprint_menu' %>
+
+<h2><%= l(:label_edit_effort) %></h2>
+
+<div class="box tabular">
+  <p>
+    <label><%= l(:label_sprint) %>:</label>
+    <%= @sprint.name %>
+  </p>
+  <p>
+    <label><%= l(:field_start_date) %>:</label>
+    <%= format_date @sprint.sprint_start_date %>
+  </p>
+  <p>
+    <label><%= l(:field_end_date) %>:</label>
+    <%= format_date @sprint.sprint_end_date %>
+  </p>
+  <%- if !(@sprint.description.blank?) -%>
+  <hr/>
+  <%= raw(Redmine::WikiFormatting::Textile::Formatter.new(@sprint.description).to_html(true)) %>
+  <%- end -%>
+</div>
+
+<%- if @project.sprints_and_product_backlogs.empty? -%>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+<%- else -%>
+  <%= form_tag(update_effort_sprint_path(@sprint)) do |f| %>
+    <%= back_url_hidden_field_tag %>
+    <%- days = (@sprint.sprint_end_date - @sprint.sprint_start_date).to_i + 1 -%>
+    <table class="list" style="display: block; overflow: auto;">
+      <thead>
+        <tr>
+          <th style="text-align: left;"><%= l(:field_user) %></th>
+          <%- ((@sprint.sprint_start_date)..(@sprint.sprint_end_date)).each do |date| -%>
+            <th style="text-align: center;"><%= I18n.l(date, :format => :scrum_day) %><br /><%= date.day %></th>
+          <%- end -%>
+        </tr>
+      </thead>
+      <tbody>
+        <%- @project.members.each do |member| -%>
+          <tr class="<%= cycle 'odd', 'even' %>">
+            <td style="text-align: left"><%= link_to_user(member.user) %></td>
+            <%- days.times do |day| -%>
+              <td style="text-align: center;">
+                <%- effort = @sprint.efforts.find_by_user_id_and_date(member.user.id,
+                                                                      @sprint.sprint_start_date + day) -%>
+                <%= text_field_tag "user[#{member.user.id}][#{day}]",
+                                   effort.nil? ? nil : effort.effort,
+                                   :size => 3 %>
+              </td>
+            <%- end -%>
+          </tr>
+        <% end; reset_cycle %>
+      <tbody>
+    </table>
+    <%= submit_tag l(:button_save) %>
+  <% end %>
+<%- end -%>
+
+<%= render :partial => "common/scrum_footer" %>

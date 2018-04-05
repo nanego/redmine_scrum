@@ -1,0 +1,31 @@
+<tr>
+  <td colspan="3">
+    <%= form_tag(url, :method => :get, :id => 'velocity_form') do %>
+      <%= hidden_field_tag(:filter_by_project, params[:filter_by_project]) %>
+
+      <%= label_tag(:velocity_type_all) do %>
+        <%= radio_button_tag(:velocity_type, 'all', 'all' == velocity_type) %>
+        <%= l(:label_velocity_all_pbis, :count => sprints_count) %>
+      <% end %>
+      &nbsp;&nbsp;&nbsp;
+
+      <%= label_tag(:velocity_type_only_scheduled) do %>
+        <%= radio_button_tag(:velocity_type, 'only_scheduled', 'only_scheduled' == velocity_type) %>
+        <%= content_tag('abbr', :title => l(:label_velocity_only_scheduled_pbis_hint)) do %>
+          <%= l(:label_velocity_only_scheduled_pbis) %>
+        <% end %>
+      <% end %>
+      &nbsp;&nbsp;&nbsp;
+
+      <%= label_tag(:velocity_type_custom) do %>
+        <%= radio_button_tag(:velocity_type, 'custom', 'custom' == velocity_type) %>
+        <%= l(:label_velocity_custom) %>
+      <% end %>
+      <%= text_field_tag(:custom_velocity, velocity, :size => 5,
+                         :onclick => "$('#velocity_type_custom').prop('checked', true);") %>
+      &nbsp;&nbsp;&nbsp;
+
+      <%= button_tag(l(:button_update)) %>
+    <% end %>
+  </td>
+</tr>

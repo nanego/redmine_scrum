@@ -1,0 +1,68 @@
+<h2>Sprint board help</h2>
+
+<h3>PBIs &amp; tasks</h3>
+
+<p>An Sprint board includes PBIs &amp; tasks. PBIs (or Product Backlog Items)
+are typically user stories, bugs, technical debts... and they are composed of
+child tasks. Under <%= links[:plugin_settings] %> you can configure which issue
+trackers are considered PBIs and which are considered tasks.</p>
+
+<p>PBIs are located on the left part of the board, tasks on the right columns.
+There is a column per possible task status (these statuses are configurable
+under <%= links[:plugin_settings] %>).</p>
+
+<p>A lot of the described features are enabled only with permissions, so take a
+look to <%= links[:permissions] %> to enable/disable permissions for each
+role.</p>
+
+<h3>Working with PBIs</h3>
+
+<p>PBIs can be created in this board with the <i class="icon icon-add">links</i>
+at the end of the board or moved from the product backlog view.</p>
+
+<p>Once you have PBIs on the Sprint board, you can dragged in vertical to
+change their order (so the team will start with the ones at the beginning).
+In the PBI post-it you will see its attributes (to enable more/less attributes
+take a look to <%= links[:plugin_settings] %>). You can edit them clicking on
+the <i class="icon icon-edit">pencil icon</i>.</p>
+
+<p>PBIs are estimated in story points (SPs), you can edit directly this value
+clicking on the SPs value and typing a new value (then press ENTER or TAB).
+If use remaining story points is enabled (under <%= links[:plugin_settings] %>)
+then you will see that field also in the post-it, it's also editable; this
+is used to calculate a precise Sprint burndown by SPs, so don't forget to
+update it day by day (before leaving the office).</p>
+
+<h3>Working with tasks</h3>
+
+<p>Tasks are technical things to be done in order to complete a PBI. They can
+be created directly clicking on the <i class="icon icon-add">icon</i> in the
+PBI post-its (or creating new child issues from the PBI issue form).</p>
+
+<p>To change task status, just drag &amp; drop in horizontal direction (or edit
+&amp; change its status). Take care of your tracker work flow, because maybe
+some movements are forbidden for some roles (ask your administrators).
+There are a few automatic actions involved when you move task post-its
+(take a look to <%= links[:plugin_settings] %> to enable/configure them):</p>
+<ul>
+  <li>When you move the first task from new (first tracker state defined
+  in the admin settings) to any other state, the plugin change parent PBI
+  status to in progress (the second state).</li>
+  <li>When you change a task status to anything but new, and it has not
+  assignee, the plugin set it to current user; if the task is changed to new
+  status, the assignee is removed.</li>
+  <li>When the last task is closed, the remaining effort is set to zero and the
+  parent PBI is changed to a configurable status (i.e. resolved).</li>
+</ul>
+
+<p>Tasks are estimated in hours, using the estimated effort field, this is also
+editable in the post-it. In order to calculate an Sprint burndown by hours is
+also necessary to fill the remaining effort field (day by day). You can log
+time to the tasks clicking on
+<i class="icon icon-time-add">log entry icon</i>.</p>
+
+<p>As soon as you assign a task or log time into it, an orange mini-post-it
+(color is configurable under <%= links[:plugin_settings] %>) is attached to the
+task, and a green one in case you log review time (review time has also to be
+configured under <%= links[:plugin_settings] %>). This allow to follow up how
+is doing what easily.</p>

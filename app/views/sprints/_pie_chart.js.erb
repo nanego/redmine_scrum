@@ -1,0 +1,28 @@
+<%= javascript_tag do %>
+  var <%= graph[:id] %>_data = [
+    <%- rows.each do |row| -%>
+      {
+        key: "<%= row[element[:name]].nil? ? "---" : row[element[:name]] %>",
+        y: <%= row[:total] %>
+      },
+    <%- end -%>
+  ];
+  nv.addGraph(function() {
+    var chart = nv.models.pieChart()
+      .x(function(d) { return d.key })
+      .y(function(d) { return d.y })
+      .showLabels(true)
+      .labelType("percent")
+      .color(d3.scale.category10().range())
+      .width(<%= graph[:width] %>)
+      .height(<%= graph[:height] %>);
+    d3.select("#<%= graph[:id] %>")
+      .datum(<%= graph[:id] %>_data)
+      .transition().duration(1200)
+      .attr('width', <%= graph[:width] %>)
+      .attr('height', <%= graph[:height] %>)
+      .call(chart);
+    chart.dispatch.on('stateChange', function(e) { nv.log('New State:', JSON.stringify(e)); });
+    return chart;
+  });
+<% end %>

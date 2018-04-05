@@ -1,0 +1,47 @@
+<h2>Ayuda del tablero de la pila de producto</h2>
+
+<h3>EPPs</h3>
+
+<p>Una pila de producto incluye EPPs (Elementos de la Pila de Producto).
+T&iacute;picamente historias de usuario, errores y deuda t&eacute;cnica...
+En <%= links[:plugin_settings] %> puedes configurar que tipos de petici&oacute;
+son consideradors EPPs.</p>
+
+<p>Los EPPs aparecen en una cola ordenada, donde la cima de la pila contiene
+los EPPs que van a ser implementados primero por el equipo.</p>
+
+<p>Muchas caracter&iacute;sticas s&oacute;lo aparecen si los permisos lo
+permiten, as&iacute; que echa un vistazo a <%= links[:permissions] %> para
+habilitarlos/deshabilitarlos para cada perfil.</p>
+
+<h3>Trabajando con EPPs</h3>
+
+<p>Los EPPs pueden crearse en este tablero usando los
+<i class="icon icon-add">enlaces</i> al principio del tablero (si quieres crear
+EPPs en la cima de la pila) or al final del tablero (si quieres crear EPPs al
+final de la pila).</p>
+
+<p>Una vez que tienes EPPs en la pila de producto, puedes arrastralos en
+vertical para cambiar su orden (as&iacute; el equipo empezar&aacute; con estos
+primero). Puesdes moverlos al inicio/final de la pila usando
+<i class="icon icon-move-top">el icono de mover arriba</i> y
+<i class="icon icon-move-bottom">el icono de mover abajo</i>.</p>
+
+<p>En el post-it del EPP ver&aacute;s sus atributos (para habilitar
+m&aacute;s/menos atributos echa un vistazo a <%= links[:plugin_settings] %>).
+Puedes editar los haciendo click en <i class="icon icon-edit">el icono del
+lapicero</i>.</p>
+
+<p>Los EPPs se estiman en puntos de historia (PHs), puedes editar su valor
+directamente haciendo click en el valor de PHs y escribiendo un nuevo valor
+(luego pulsa ENTER o TAB). Si los puntos de historia pendientes est&aacute;
+habilidato (en <%= links[:plugin_settings] %>) entonces ver&aacute;s que
+este campo tambi&eacute;n est&aacute;, tambi&eacute;n ser&aacute; editable.</p>
+
+<h3>La pila de producto en equipos multi-proyecto</h3>
+
+<p>Si tienes varios proyectos bajo el proyecto del equipo Scrum, y asignas
+EPPs y tareas a esos proyectos hijos (deben tener tambi&eacute;n el
+m&oacute;dulo Scrum activo), entonces la pila de producto puede ser filtrada
+por subproyecto. Si filtras la pila de producto, la ordenación de EPPs no
+estará permitida.</p>

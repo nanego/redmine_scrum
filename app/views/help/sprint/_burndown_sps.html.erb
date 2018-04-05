@@ -1,0 +1,22 @@
+<h2>Sprint burndown by SPs help</h2>
+
+<p>Sprint burndown by SPs shows the progress of the team in story points. The
+valor can accurately logged by users (via pending story points field, it must
+be enabled under <%= links[:plugin_settings] %>) or with less precision when
+each PBI is closed.</p>
+
+<h3>Logging pending SPs day by day</h3>
+
+<p>Every team member must log the pending SPs day by day in the PBIs. Due the
+fact the plugin records every pending SPs on the day is logged, don't forget
+to log that value every day if you want an accurate burndown graph.</p>
+
+<h3>Understanding the burndown by SPs</h3>
+
+<p>Pending SPs line (or lines in multi-project teams) represents the pending
+SPs of Sprint PBIs day by day (this is not related in any way with the
+PBI SPs field, nevertheless usually PBI pending SPs use to be equal to the
+SPs field when we start working on the PBI).</p>
+
+<%= render :partial => 'help/burndown_multi_project',
+           :locals => {:links => links} %>

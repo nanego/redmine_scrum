@@ -1,0 +1,21 @@
+<h3 class="title"><%= l(:label_check_dependencies) %></h3>
+
+<%- if @pbis_dependencies.count <= 0 -%>
+  <%= l(:label_no_invalid_dependencies) %>
+<%- else -%>
+  <p><%= l(:label_invalid_dependencies) %></p>
+  <ul>
+  <%- @pbis_dependencies.each do |pbi_dependencies| -%>
+    <%- if pbi_dependencies[:dependencies].count > 0 -%>
+      <li>
+        <%= raw l(:label_invalid_dependencies_for_pbi, :pbi => link_to_issue(pbi_dependencies[:pbi])) %>
+        <ul>
+        <%- pbi_dependencies[:dependencies].each do |dependency| -%>
+          <li><%= link_to_issue(dependency) %></li>
+        <%- end -%>
+        </ul>
+      </li>
+    <%- end -%>
+  <%- end -%>
+  </ul>
+<%- end -%>

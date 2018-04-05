@@ -1,0 +1,76 @@
+<%- task_id = "task_#{task.id}" -%>
+<table id="<%= task_id %>"
+       class="<%= task.post_it_css_class(:rotate => true,
+                                         :scale => true,
+                                         :draggable => true) %>"
+       old-status="<%= task.status.id %>">
+  <tr>
+    <td class="content" colspan="3">
+      <div class="content">
+        <%- if User.current.allowed_to?(:edit_sprint_board, project) and
+               User.current.allowed_to?(:edit_issues, project) and
+               task.editable? and !read_only -%>
+          <%= link_to('', edit_task_path(task), :remote => true, :method => 'GET',
+                      :class => 'icon icon-edit float-icon', :title => l(:label_edit_task)) %>
+        <%- end -%>
+        <%- if User.current.allowed_to?(:log_time, project) -%>
+            <%= link_to('',
+                        new_scrum_time_entry_path(task,
+                                                  :pbi_status_id => pbi_status_id,
+                                                  :other_pbi_status_ids => other_pbi_status_ids.join(','),
+                                                  :task_id => task_id),
+                        :remote => true, :method => 'GET',
+                        :class => 'icon icon-log-time float-icon',
+                        :title => l(:button_log_time)) %>
+        <%- end -%>
+        <%= render_issue_icons(task) %>
+        <%= render(:partial => 'post_its/sprint_board/fields', :formats => [:html],
+                   :locals => {:project => project, :issue => task}) %>
+        <div>
+          <%= link_to_issue(task, :tracker => false, :truncate => 100,
+                            :project => project != task.project) %>
+        </div>
+        <%= render(:partial => 'post_its/sprint_board/custom_fields', :formats => [:html],
+                   :locals => {:project => project, :issue => task}) %>
+        <div class="doers-reviewers-post-its-container">
+          <%- task.doers.each do |doer| -%>
+            <div class="<%= Issue.doer_post_it_css_class %>">
+              <%= avatar(doer, :size => '14') %> <%= link_to_user doer %>
+            </div>
+          <%- end -%>
+          <%- task.reviewers.each do |reviewer| -%>
+            <div class="<%= Issue.reviewer_post_it_css_class %>">
+              <%= avatar(reviewer, :size => '14') %> <%= link_to_user reviewer %>
+            </div>
+          <%- end -%>
+          <%- if task.scrum_blocked? -%>
+            <div class="<%= Issue.blocked_post_it_css_class %>">
+              <%= l :label_blocked %>
+            </div>
+          <%- end -%>
+        </div>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td class="estimation">
+      <%= render_hours(task.estimated_hours, :title => l(:field_estimated_hours)) %>
+    </td>
+    <td class="spent">
+      <%- if User.current.allowed_to?(:view_time_entries, project) -%>
+        <%= render_hours(task.spent_hours, :title => l(:label_spent_time), :ignore_zero => true,
+                         :link => project_time_entries_path(task.project, :issue_id => task.id)) %>
+      <%- end -%>
+    </td>
+    <td class="pending">
+      <%= render(:partial => 'common/scrum_pending_effort', :formats => [:html],
+                 :locals => {:project => project, :task => task}) %>
+    </td>
+  </tr>
+</table>
+
+<%= render(:partial => 'post_its/sprint_board/task', :formats => [:js],
+           :locals => {:project => project,
+                       :other_pbi_status_ids => other_pbi_status_ids,
+                       :task_id => task_id,
+                       :task => task}) %>

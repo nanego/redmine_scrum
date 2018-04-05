@@ -1,0 +1,30 @@
+<%- if User.current.allowed_to?(:edit_pending_effort, @issue.project) -%>
+  <div id="edit_pending_effort" class="scrum-dialog"
+       title="<%= l(@issue.is_task? ? :field_pending_effort : :label_remaining_story_point_plural) %>">
+    <%= form_tag(change_pending_efforts_path(issue), :method => :post) do %>
+      <table align="center">
+        <tr>
+          <th><%= l(:field_effective_date) %></th>
+          <th><%= l(@issue.is_task? ? :field_hours : :label_remaining_story_point_plural) %></th>
+        </tr>
+        <%- issue.pending_efforts.each_with_index do |pending_effort, index| -%>
+          <tr>
+            <th>
+              <%= format_date(pending_effort.date) %>
+            </th>
+            <td>
+              <%= text_field_tag "pending_efforts[#{pending_effort.id}]",
+                                 pending_effort.effort,
+                                 :size => 2 %>
+            </td>
+          </tr>
+        <%- end -%>
+        <tr>
+          <td colspan="2" align="left">
+            <%= submit_tag l(:button_edit), :name => 'edit', :disable_with => l(:label_loading) %>
+          </td>
+        </tr>
+      </table>
+    <% end %>
+  </div>
+<%- end -%>

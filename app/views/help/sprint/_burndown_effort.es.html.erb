@@ -1,0 +1,43 @@
+<h2>Ayuda para el burndown por esfuerzo del Sprint</h2>
+
+<p>El burndown por esfuerzo del Sprint muestra el progreso del equipo comparando
+el esfuerzo estimado con el esfuerzo pendiente real. Todos los esfuerzos son
+medidos en horas.</p>
+
+<h3>Rellenado el esfuerzo estimado</h3>
+
+<p>Cuando el Sprint comienza el equipo configura el esfuerzo estimado en
+<%= links[:sprint_effort] %>, para rellenar esta tabla (una fila por miembro
+del equipo, una columna por d&iacute;a del Sprint) debes seguir las siguientes
+reglas:</p>
+<ul>
+  <li>S&oacute;lo los miembros activos (aquellos que van a trabar en tareas)
+  deben rellenarse.</li>
+  <li>No pongas nada cuando un miembro del equipo no est&eacute; disponible
+  (por ejemplo en fin de semana o festivos). Si todo el mundo no tiene esfuerzo
+  un d&iacute;a, entonces ese d&iacute;a no ser&aacute; mostrado.</li>
+  <li>Es v&aacute;lido poner 0.0 en una celda si quieres reflejar que el
+  miembro del equipo trabaja en el Sprint, pero quiz&aacute;s s&oacute;lo para
+  asistir a reuniones.</li>
+  <li>Se acepta poner decimales, pero no inviertas mucho tiempo pensando acerca
+  de cuanto tiempo pner aqu&iacute;, esto es Scrum, pon un n&uacute;mero y
+  val&oacute;ralo en la siguiente retrospectiva del Sprint ;)</li>
+</ul>
+
+<h3>Imputando esfuerzo d&iacute;a a d&iacute;a</h3>
+
+<p>Cada miembro del equipo debe imputar las horas d&iacute;a a d&iacute;a.
+Esto se debe a que el plugin registra en que d&iacute;a se hace cada esfuerzo,
+no olvides imputar las horas cada d&iacute;a si quieres un gr&aacute;fico de
+burndown preciso.</p>
+
+<h3>Entendiendo el burndown por esfuerzo</h3>
+
+<p>La l&iacute;nea de esfuerzo estimado representa la tabla que el equipo
+rellen&oacute; antes. En cambio, la l&iacute;nea de esfuerzo pendiente (o
+l&iacute;neas en equipos multi-proyecto) representa el esfuerzo pendiente de
+las tareas del Sprint d&iacute;a a d&iacute;a (no tiene nada que ver con el
+campo de esfuerzo estimado de las tareas).</p>
+
+<%= render :partial => 'help/burndown_multi_project',
+           :locals => {:links => links} %>

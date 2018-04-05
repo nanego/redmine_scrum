@@ -1,0 +1,30 @@
+<tr valign="top">
+  <td width="300px">
+    <div class="tabular">
+      <p>
+        <label><%= l(:label_product_backlog) %>:</label>
+        <%- options = product_backlog.project.product_backlogs.collect{ |other_product_backlog|
+              [other_product_backlog.name, path.call(other_product_backlog, params.symbolize_keys)] }
+            options = options_for_select(options, path.call(product_backlog, params.symbolize_keys)) -%>
+        <%= select_tag('selected_sprint_id', options,
+                       :onchange => "if (this.value != '') { window.location = this.value; }") %>
+      </p>
+      <%- if product_backlog.shared and @subprojects and !@project.children.visible.empty? -%>
+        <p>
+          <label><%= l(:label_filter_by_project) %>:</label>
+          <%- options = options_for_select(@subprojects, @selected_subproject) -%>
+          <%= select_tag('select_project_id', options,
+                         :onchange => "if (this.value != '') { window.location = this.value; }") %>
+        </p>
+      <%- end -%>
+    </div>
+  </td>
+  <td>
+    <%- unless product_backlog.description.blank? -%>
+      <%= textilizable(product_backlog.description) %>
+    <%- end -%>
+  </td>
+  <%- if Scrum::Setting.show_project_totals_on_backlog -%>
+    <%= render :partial => 'post_its/stats', :locals => {:stats => @stats} %>
+  <%- end -%>
+</tr>

@@ -1,0 +1,34 @@
+<%= javascript_tag do %>
+var <%= graph[:id] %>_data = [
+  <%- rows.each do |name, data| -%>
+  {
+    key: '<%= name ? name : "---" %>',
+    values: [<%= raw(data.collect{ |name, value| "{x: '#{name}', y: #{value}}" }.join(', ')) %>]
+  },
+  <%- end -%>
+];
+if (<%= graph[:id] %>_data.length > 0)
+{
+  nv.addGraph(function() {
+    var chart = nv.models.multiBarChart()
+      .color(d3.scale.category10().range())
+      .reduceXTicks(false)
+      .showControls(false);
+    chart.tooltip.contentGenerator(function(data) {
+      return '<h3>' + data.value + ' (' + data.series.length + ')</h3><p>' + data.series[0]['key'] + ': ' + data.series[0]['value'] + '</p>';
+    });
+    chart.yAxis.tickFormat(d3.format('.2f'));
+    chart.yAxis.ticks(10);
+    if (<%= graph[:id] %>_data[0].values.length > 1)
+    {
+      chart.margin({bottom: 100});
+      chart.xAxis.rotateLabels(-30);
+    }
+    d3.select("#<%= graph[:id] %> svg")
+      .datum(<%= graph[:id] %>_data)
+      .call(chart);
+    nv.utils.windowResize(chart.update);
+    return chart;
+  });
+}
+<% end %>

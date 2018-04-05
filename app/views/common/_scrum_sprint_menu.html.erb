@@ -1,0 +1,36 @@
+<div class="contextual scrum-menu">
+  <%- if User.current.allowed_to?(:view_sprint_board, @project) -%>
+    <%= link_to(l(:label_sprint_board),
+                @sprint ? sprint_path(@sprint) : project_sprints_path(@project),
+                :class => 'icon icon-sprint-board') %>
+  <%- end -%>
+  <%- if User.current.allowed_to?(:view_sprint_burndown, @project) -%>
+    <%= link_to(l(:label_sprint_burndown_chart_hours),
+                @sprint ? burndown_sprint_path(@sprint, :type => :effort) :
+                          burndown_index_project_sprints_path(@project, :type => :effort),
+                :class => 'icon icon-burndown') %>
+    <%= link_to(l(:label_sprint_burndown_chart_sps),
+                @sprint ? burndown_sprint_path(@sprint, :type => :sps) :
+                          burndown_index_project_sprints_path(@project, :type => :sps),
+                :class => 'icon icon-burndown') %>
+  <%- end -%>
+  <%- if User.current.allowed_to?(:view_sprint_stats, @project) -%>
+    <%= link_to(l(:label_sprint_stats),
+                @sprint ? stats_sprint_path(@sprint) : stats_index_project_sprints_path(@project),
+                :class => 'icon icon-stats') %>
+  <%- end -%>
+  <%- if User.current.allowed_to?(:manage_sprints, @project) and @sprint -%>
+    <%= link_to('', new_project_sprint_path(@project, :back_url => url_for(params)),
+                :class => 'icon icon-add', :title => l(:button_add)) %>
+    <%= link_to('', edit_sprint_path(@sprint, :back_url => url_for(params)),
+                :class => 'icon icon-edit', :title => l(:button_edit)) %>
+    <%= link_to('', sprint_path(@sprint),
+                {:method => :delete,
+                 :data => {:confirm => l(:text_are_you_sure)},
+                 :class => 'icon icon-del',
+                 :title => l(:button_delete)}) %>
+    <%= link_to('', edit_effort_sprint_path(@sprint, :back_url => url_for(params)),
+                :class => 'icon icon-time-add', :title => l(:label_edit_effort)) %>
+  <%- end -%>
+  <%= render_scrum_help %>
+</div>

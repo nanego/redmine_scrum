@@ -1,0 +1,8 @@
+<%- if defined?(@exception) -%>
+  <%- message = l(:error_updating_pbi, :message => @exception.message)
+      message_class = "error" -%>
+  $("#popup-messages").html("<div class=\"flash <%= message_class %>\"><%= message %></div>");
+<%- else -%>
+  $("#ajax-modal").dialog("close");
+  $("#<%= "pbi_#{@pbi.id}_row" %>").remove();
+<%- end -%>

@@ -1,0 +1,25 @@
+<%- if defined?(@exception) -%>
+  <%- message = l(:error_updating_task, :message => @exception.message)
+      message_class = "error" -%>
+  $("#popup-messages").html("<div class=\"flash <%= message_class %>\"><%= message %></div>");
+<%- else -%>
+  if ($("#ajax-modal").length && $("#ajax-modal").hasClass("ui-dialog-content"))
+  {
+    $("#ajax-modal").dialog("close");
+  }
+  <%- pbi_status_id = "pbi_#{@issue.parent_id}_status_#{@issue.status.id}"
+      other_pbi_status_ids = IssueStatus.task_statuses.select{|other| other != @issue.status}.collect{
+        |other| "pbi_#{@issue.parent_id}_status_#{other.id}"
+      } -%>
+  $("#<%= "pbi_#{@issue.parent_id}_row" %>").replaceWith("<%=
+    escape_javascript(render :partial => "post_its/sprint_board/pbi_row",
+                             :formats => [:html],
+                             :locals => {:project => @issue.sprint.project, :sprint_board_id => 'sprint_board',
+                                         :pbi => @issue.parent, :task_statuses => IssueStatus.task_statuses}).html_safe
+  %>");
+  <%- if @old_status != @issue.status -%>
+    var task = $("#<%= "task_#{@issue.id}" %>");
+    task.detach();
+    task.appendTo($("#<%= "pbi_#{@issue.parent_id}_status_#{@issue.status.id}" %>"));
+  <%- end -%>
+<%- end -%>

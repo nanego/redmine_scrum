@@ -1,0 +1,18 @@
+<div>
+  <%- if User.current.allowed_to?(:add_issues, project) and
+         @product_backlog.open? -%>
+    <%- Tracker.pbi_trackers(project).each do |tracker| -%>
+      <span class="post-it settings-post-it <%= tracker.post_it_css_class %>">
+        <%= link_to(tracker.name,
+                    new_pbi_path(@product_backlog, tracker, :top => top),
+                    :remote => true, :method => 'GET', :class => 'icon icon-add',
+                    :title => l(top ? :label_add_pbi_at_top : :label_add_pbi_at_bottom,
+                                :tracker => tracker.name)) %>
+      </span>
+    <%- end -%>
+  <%- end -%>
+  <%= link_to(l(:label_check_dependencies),
+              check_dependencies_product_backlog_path(@product_backlog),
+              :remote => true, :method => 'GET', :class => 'icon icon-help') %>
+</div>
+<br />

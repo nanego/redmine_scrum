@@ -1,0 +1,67 @@
+<%- pbi_id = "pbi_#{pbi.id}" -%>
+
+<li id="<%= pbi_id %>"
+    class="<%= pbi.post_it_css_class(:small_rotate => true, :small_scale => true,
+                                     :draggable => User.current.allowed_to?(:sort_product_backlog, pbi.project) &&
+                                                   params[:filter_by_project].blank?) %>">
+  <table>
+    <tr>
+      <td class="header-1">
+        <span class="pb-pbi-mini-post-its-container">
+          <%- if pbi.scrum_blocked? -%>
+            <span class="<%= Issue.blocked_post_it_css_class %>">
+              <%= l :label_blocked %>
+            </span>
+            &nbsp;&nbsp;
+          <%- end -%>
+        </span>
+        <%= render_pbi_left_header(pbi) %>
+      </td>
+      <td class="header-2">
+        <%= render_pbi_right_header(pbi) %>
+      </td>
+      <%- if pbi.has_story_points? -%>
+        <td class="story-points" rowspan="2">
+          <%= render :partial => 'common/scrum_story_points',
+                     :locals => {:pbi => pbi, :read_only => read_only} %>
+        </td>
+      <%- end -%>
+      <%- if Scrum::Setting.use_remaining_story_points? -%>
+        <td class="story-points" rowspan="2">
+          <%= render :partial => 'common/scrum_remaining_story_points',
+                     :locals => {:pbi => pbi, :read_only => read_only} %>
+        </td>
+      <%- end -%>
+      <%- if User.current.allowed_to?(:edit_product_backlog, project) and
+             User.current.allowed_to?(:edit_issues, pbi.project) and
+             pbi.editable? and !read_only -%>
+        <td rowspan="2">
+          <%= link_to '', edit_pbi_path(pbi),
+                      :remote => true, :method => 'GET', :class => 'icon icon-edit' %>
+        </td>
+      <%- end -%>
+      <%- if User.current.allowed_to?(:sort_product_backlog, project) and
+             User.current.allowed_to?(:edit_issues, pbi.project) and
+             pbi.editable? and !read_only -%>
+        <td rowspan="2">
+          <%= link_to '', move_pbi_path(pbi, :top),
+                      :remote => true, :method => 'GET', :class => 'icon icon-move-top' %>
+          <br />
+          <%= link_to '', move_pbi_path(pbi, :bottom),
+                      :remote => true, :method => 'GET', :class => 'icon icon-move-bottom' %>
+        </td>
+      <%- end -%>
+    </tr>
+    <tr>
+      <td class="content" colspan="2">
+        <%= link_to_issue(pbi, :tracker => false, :project => project != pbi.project) %>
+      </td>
+    </tr>
+  </table>
+</li>
+
+<%- if User.current.allowed_to?(:edit_product_backlog, pbi.project) and pbi.editable? and !read_only -%>
+  <%= javascript_tag do %>
+    draggableOnTouchScreen("<%= pbi_id %>");
+  <% end %>
+<%- end -%>

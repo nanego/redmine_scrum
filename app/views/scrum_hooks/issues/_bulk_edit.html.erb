@@ -1,0 +1,17 @@
+<%- if defined?(@project) and @project.scrum? -%>
+  <% if @safe_attributes.include?("sprint_id") -%>
+    <p>
+      <label for="sprint_id"><%= l(:field_sprint) %></label>
+      <%- sprints = @project.all_open_sprints_and_product_backlogs
+          options = content_tag("option", l(:label_no_change_option), :value => "") +
+                    options_from_collection_for_select(sprints, :id, :name) -%>
+      <%= select_tag "issue[sprint_id]", options %>
+    </p>
+  <%- end -%>
+  <%- if User.current.allowed_to?(:edit_pending_effort, @project) -%>
+    <p>
+      <label for="pending_effort"><%= l(:field_pending_effort) %></label>
+      <%= text_field_tag "issue[pending_effort]", "", :size => 3 %>
+    </p>
+  <%- end -%>
+<%- end -%>

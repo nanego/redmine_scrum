@@ -1,0 +1,26 @@
+<div class="contextual scrum-menu">
+  <%- if User.current.allowed_to?(:view_product_backlog, @project) -%>
+    <%= link_to(l(:label_product_backlog), product_backlog_path(@product_backlog),
+                :class => 'icon icon-product-backlog') %>
+  <%- end -%>
+  <%- if User.current.allowed_to?(:view_product_backlog_burndown, @project) -%>
+    <%= link_to(l(:label_product_backlog_burndown_chart), burndown_product_backlog_path(@product_backlog),
+                :class => 'icon icon-burndown') %>
+  <%- end -%>
+  <%- if User.current.allowed_to?(:view_release_plan, @project) -%>
+    <%= link_to(l(:label_release_plan), release_plan_product_backlog_path(@product_backlog),
+                :class => 'icon icon-release-plan') %>
+  <%- end -%>
+  <%- if User.current.allowed_to?(:manage_sprints, @project) and @product_backlog -%>
+    <%= link_to('', new_project_sprint_path(@project, :back_url => url_for(params), :create_product_backlog => true),
+                :class => 'icon icon-add', :title => l(:button_add)) %>
+    <%= link_to('', edit_sprint_path(@product_backlog, :back_url => url_for(params)),
+                :class => 'icon icon-edit', :title => l(:button_edit)) %>
+    <%= link_to('', sprint_path(@product_backlog),
+                {:method => :delete,
+                 :data => {:confirm => l(:text_are_you_sure)},
+                 :class => 'icon icon-del',
+                 :title => l(:button_delete)}) %>
+  <%- end -%>
+  <%= render_scrum_help %>
+</div>

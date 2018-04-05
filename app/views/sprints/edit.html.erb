@@ -1,0 +1,11 @@
+<%= render :partial => @product_backlog ? 'common/scrum_backlog_menu' : 'common/scrum_sprint_menu' %>
+
+<h2><%= l(:label_sprint) %></h2>
+
+<%= labelled_form_for @sprint do |f| %>
+  <%= back_url_hidden_field_tag %>
+  <%= render :partial => "sprints/form", :locals => {:f => f} %>
+  <%= submit_tag l(:button_save) %>
+<% end %>
+
+<%= render :partial => "common/scrum_footer" %>

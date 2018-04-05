@@ -1,0 +1,81 @@
+<h2>Ayuda del tablero del Sprint</h2>
+
+<h3>EPPs y tareas</h3>
+
+<p>Un tablero del Sprint incluye EPPs y tareas. EPPs (o Elementos de la Pila
+de Producto) son normalmente historias de usuario, errores o deuda
+t&eacute;cnica... y estos se descomponen en tareas hijas. En
+<%= links[:plugin_settings] %> puedes configurar qu&eacute; tipos de peticiones
+son considerados EPPs y cuales son considerados tareas.</p>
+
+<p>Los EPPs se encuentran en la parte izquierda del tablero, las tareas en las
+columnas a la derecha. Hay una columna por cada posible estado de las tereas
+(estos estados son configurables en <%= links[:plugin_settings] %>).</p>
+
+<p>Muchas caracter&iacute;sticas aqu&iacute; descritas est&aacute;n s&oacute;lo
+habilitadas con los permisos apropiados, as&iacute; que echa un vistazo a
+<%= links[:permissions] %> para habilitarlos/deshabilitarlos para cada
+perfil.</p>
+
+<h3>Trabajando con EPPs</h3>
+
+<p>Los EPPs pueden crearse en este tablero con los
+<i class="icon icon-add">enlaces</i> al final del tablero o movi&eacute;ndolos
+desde la vista de la pila de producto.</p>
+
+<p>Una vez que tienes EPPs en el tablero del Sprint, puedes arrastrarlos en
+vertical para cambiar su orden (as&iacute; el equipo empezar&aacute; antes por
+los que est&eacute;n al principio). En los post-its de los EPPs ver&aacute;s
+sus atributos (para habilitar m&aacute;s/menos atributos echa un vistazo a
+<%= links[:plugin_settings] %>). Puedes editarlos haciendo click en el
+<i class="icon icon-edit">icono del lapicero</i>.</p>
+
+<p>Los EPPs se estima en puntos de historia (PHs), puedes editar esta valor
+directamente haciendo click en el valor de PHs y escribiendo un nuevo valor
+(luego pulsa ENTER o TAB). Si el ajuste de usar puntos de historia restante
+est&aacute; habilitado (en <%= links[:plugin_settings] %>) entonces ver&aacute;s
+que el campo aparece tambi&eacute;n en el post-it, tambi&eacute;n ser&aacute;
+editable; este valor se usa para calcular un burndown por PHs preciso,
+as&iacute; que no olvideis actualizarlo d&iaacute;a a d&iacute;a (antes de
+salir de la oficina).</p>
+
+<h3>Trabajando con tareas</h3>
+
+<p>Las tareas son asuntos t&eacute;cnicos a realizar para completar un EPP.
+Pueden ser creadas directamente haciendo click en el
+<i class="icon icon-add">icono</i> en los post-its de EPP (o creando una
+petici&oacute;n hija en la ficha del EPP).</p>
+
+<p>Para cambiar el estado de la tarea, simplemente arr&aacute;strala en
+direcci&oacute;n horizontal (o ed&iacute;tala y cambia su estado). Ten en
+cuenta tu flujo de trabajo del tipo de petici&oacute;n, porque puede que algunos
+movimientos esten prohibidos para algunos perdiles (pregunta a tus
+administradores). Hay varias acciones autom&aacute;ticas implicadas cuando
+mueves post-its (echa un vistazo a <%= links[:plugin_settings] %> para
+habilitarlas/deshabilitarlas):</p>
+<ul>
+  <li>Cuando mueves la primera tarea del estado nuevo (primer estado de los
+  tipos de peticiones en los ajustes de administraci&oacute;n) a cualquier otro
+  estado, el plugin cambia el estado del EPP padre a en progreso (segundo
+  estado).</li>
+  <li>Cuando cambias el estado de una tarea a cualquiera menos nuevo, y esta
+  no tiene asignado, el plugin la asigna al usuario actual; si la tarea es
+  cambiada al estado nuevo, el campo asignado es vaciado.</li>
+  <li>Cuando la &uacute;ltima tarea es completada, el esfuerzo pendiente se
+  establece a cero y el EPP padre es cambiado a un estado configurable (por
+  ejemplo resuelto).</li>
+</ul>
+
+<p>Las tareas son estimadas en horas, usando el campo esfuerzo estimaod, este
+tambi&eacute;n puede editarse en el post-it. Para calcular el burndown del
+Sprint por horas es necesario que tambi&eacute;n se rellene el campo de esfuerzo
+pendiente (d&iacute;a a d&iacute;a). Puedes imputar tiempo en las tareas
+haciendo click en el <i class="icon icon-time-add">icono de imputar
+tiempo</i>.</p>
+
+<p>Tan pronto como asignes una tarea o imputes tiempo en ella, un mini-post-it
+naranja (el color es configurable en <%= links[:plugin_settings] %>) es
+a&ntilde;adido a la tarea, y un mini-post-it verde en el caso de que imputes
+tiempo de revisi&oacute;n (la actividad para el tiempo de revisi&oacute;n es
+configurada en <%= links[:plugin_settings] %>). Esto permite hacer seguimiento
+de que se est&aacute; haciendo m&aacute;s f&aacute;cilmente.</p>

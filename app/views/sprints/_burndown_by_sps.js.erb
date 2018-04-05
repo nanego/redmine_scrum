@@ -1,0 +1,61 @@
+<%= javascript_tag do %>
+	// Create the tooltip DOM element.
+	var toolTip = document.createElement("div"),
+		leftOffset = -(~~$("html").css("padding-left").replace("px", "") + ~~$("body").css("margin-left").replace("px", "")),
+		topOffset = -32;
+	toolTip.className = "graphic-tooltip";
+	document.body.appendChild(toolTip);
+	// Chart data.
+	var data = {
+		// Horizontal set of values (ordinal), vertical values (linear).
+		"xScale": "ordinal",
+		"yScale": "linear",
+		"yMin": 0,
+		"main": [
+			<%- serieIndex = 0
+					series.each do |serie| -%>
+				{
+					// Pending SPs serie.
+					"className": ".pending-sps-<%= serieIndex %>",
+					"data": [
+					<%- serie[:data].each_with_index do |value, day| -%>
+						<%- unless value[:pending_sps].nil? -%>
+							{
+								"x": <%= day %>,
+								"y": <%= value[:pending_sps] %>,
+								"tooltip": "<%= value[:pending_sps_tooltip] %>"
+							},
+						<%- end -%>
+					<%- end -%>
+					]
+				},
+				<%- serieIndex += 1 -%>
+			<%- end -%>
+		]
+	};
+	// X axis labels.
+	var x_axis_labels = [
+		<%- x_axis_labels.each do |label| -%>
+			'<%= label %>',
+		<%- end -%>
+	];
+	// Chart options.
+	var options = {
+		// Use data label as horizontal axis labels.
+		"tickFormatX": function(x) { return x_axis_labels[x]; },
+		// Render a tooltip when mouse goes over the values.
+		"mouseover": function(d, i) {
+			var pos = $(this).offset();
+			$(toolTip).text(d.tooltip)
+			.css({top: topOffset + pos.top, left: pos.left + leftOffset})
+			.show();
+		},
+		// Hide the tooltip when mouse exists the values.
+		"mouseout": function(x) {
+			$(toolTip).hide();
+		}
+	};
+	console.log('options: ' + options);
+	// Generate the chart.
+	new xChart("line-dotted", data, "#burndown-chart", options);
+<% end %>

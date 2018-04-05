@@ -1,0 +1,68 @@
+<%- pbi_id = "pbi_#{pbi.id}" -%>
+<%- is_simple = pbi.is_simple_pbi? -%>
+<table id="<%= pbi_id %>"
+       class="<%= pbi.post_it_css_class(:rotate => true,
+                                        :scale => true,
+                                        :draggable => true) %>">
+  <tr>
+    <td class="content" colspan="3">
+      <%- if User.current.allowed_to?(:edit_sprint_board, project) and
+             User.current.allowed_to?(:edit_issues, project) and
+             pbi.editable? and !read_only -%>
+        <%= link_to "", edit_pbi_path(pbi), :remote => true, :method => "GET",
+                    :class => "icon icon-edit float-icon", :title => l(:label_edit_pbi) %>
+        <%- unless is_simple -%>
+          <%- Tracker.task_trackers.each do |tracker| -%>
+            <%= link_to "", new_task_path(pbi, tracker), :remote => true, :method => "GET",
+                        :class => "icon icon-add float-icon",
+                        :title => l(:label_add_task, :tracker => tracker.name) %>
+          <%- end -%>
+        <%- end -%>
+      <%- end -%>
+      <%= render_issue_icons(pbi) %>
+      <div>
+        <%= link_to_issue(pbi, :tracker => false, :truncate => 150,
+                          :project => project != pbi.project) %>
+      </div>
+      <%= render :partial => "post_its/sprint_board/fields", :formats => [:html],
+                 :locals => {:project => project, :issue => pbi} %>
+      <%= render :partial => "post_its/sprint_board/custom_fields", :formats => [:html],
+                 :locals => {:project => project, :issue => pbi} %>
+      <div class="doers-reviewers-post-its-container">
+        <%- if pbi.scrum_blocked? -%>
+          <div class="<%= Issue.blocked_post_it_css_class %>">
+            <%= l :label_blocked %>
+          </div>
+        <%- end -%>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td class="estimation">
+      <%- if pbi.has_story_points? -%>
+        <%= render :partial => "common/scrum_story_points", :formats => [:html],
+                   :locals => {:pbi => pbi, :read_only => read_only} %>
+      <%- end -%>
+      <%- if Scrum::Setting.use_remaining_story_points? -%>
+        <%= render :partial => "common/scrum_remaining_story_points", :formats => [:html],
+                   :locals => {:pbi => pbi, :read_only => read_only} %>
+      <%- end -%>
+    </td>
+    <td class="spent">
+      <%- if User.current.allowed_to?(:view_time_entries, project) -%>
+        <%= render_hours(pbi.total_time, :title => l(:label_total_effort),
+                         :ignore_zero => pbi.children.empty?) %>
+      <%- end -%>
+    </td>
+    <td class="pending">
+      <%- if User.current.allowed_to?(:view_pending_effort, project) -%>
+        <%= render_hours(pbi.pending_effort_children, :title => l(:field_pending_effort),
+                         :ignore_zero => pbi.children.empty?) %>
+      <%- end -%>
+    </td>
+  </tr>
+</table>
+<%= render :partial => 'post_its/sprint_board/pbi', :formats => [:js],
+           :locals => {:project => project,
+                       :pbi => pbi,
+                       :pbi_id => pbi_id} %>

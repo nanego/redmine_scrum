@@ -1,0 +1,39 @@
+<h2>Sprint burndown by effort help</h2>
+
+<p>Sprint burndown by effort shows the progress of the team comparing the
+estimated effort with the actual pending effort. All these efforts are measured
+in hours.</p>
+
+<h3>Filling the estimated effort</h3>
+
+<p>When the Sprint starts the team must configure the estimated effort under
+<%= links[:sprint_effort] %>, to fill this table (one row per team member,
+one column per Sprint day) you must follow these rules:</p>
+<ul>
+  <li>Only active members (those who are going to work on tasks) must be
+  filled.</li>
+  <li>Don't fill anything when a team member is not available (i.e. weekend
+  days or holidays). If everybody has no effort one day, that day will not be
+  rendered.</li>
+  <li>It's valid to put 0.0 in a cell if you want to reflect that the team
+  member is working on the Sprint, but maybe only to attend to meetings.</li>
+  <li>It's OK to put decimals, but don't invest too much time thinking about
+  how much time to put here, this is Scrum, put a number and evaluate it in
+  the next Sprint retrospective ;)</li>
+</ul>
+
+<h3>Logging effort day by day</h3>
+
+<p>Every team member must log the time day by day. Due the fact the plugin
+records every effort on the day is logged, don't forget to log the time every
+day if you want an accurate burndown graph.</p>
+
+<h3>Understanding the burndown by effort</h3>
+
+<p>Estimated effort line it's just the table that the team filled before.
+On the other hand, pending effort line (or lines in multi-project teams)
+represents the pending effort of Sprint tasks day by day (this is not related
+in any way with the estimated effort tasks field).</p>
+
+<%= render :partial => 'help/burndown_multi_project',
+           :locals => {:links => links} %>

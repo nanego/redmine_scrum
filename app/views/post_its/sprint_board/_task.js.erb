@@ -1,0 +1,16 @@
+<%- if User.current.allowed_to?(:edit_sprint_board, project) and task.editable? -%>
+	<%= javascript_tag do %>
+		<%- other_pbi_status_ids.each do |pbi_status_id| -%>
+			$(document).ready(function() {
+				$("#<%= task_id %>").draggable({
+					revert: "invalid",
+					axis: "x",
+					containment: "<%= pbi_status_id %>",
+					cursor: "ew-resize",
+					stack: "table"
+				});
+				draggableOnTouchScreen("<%= task_id %>");
+			});
+		<%- end -%>
+	<% end %>
+<%- end -%>

@@ -1,0 +1,20 @@
+<%- if Scrum::Setting.tracker_field?(issue.tracker.id, :status_id, Scrum::Setting::TrackerFields::SPRINT_BOARD_FIELDS) and issue.status -%>
+    <%= content_tag("div") do %>
+        <span class="post-it-legend"><%= l(:field_status) %>:</span>
+        <%= h(issue.status.name) %>
+    <% end %>
+<%- end -%>
+
+<%- if Scrum::Setting.tracker_field?(issue.tracker.id, :category_id, Scrum::Setting::TrackerFields::SPRINT_BOARD_FIELDS) and issue.category -%>
+    <%= content_tag("div") do %>
+        <span class="post-it-legend"><%= l(:field_category) %>:</span>
+        <%= h(issue.category.name) %>
+    <% end %>
+<%- end -%>
+
+<%- if Scrum::Setting.tracker_field?(issue.tracker.id, :fixed_version_id, Scrum::Setting::TrackerFields::SPRINT_BOARD_FIELDS) and issue.fixed_version -%>
+    <%= content_tag("div") do %>
+        <span class="post-it-legend"><%= l(:field_fixed_version) %>:</span>
+        <%= link_to_version(issue.fixed_version) %>
+    <% end %>
+<%- end -%>

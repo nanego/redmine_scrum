@@ -1,0 +1,18 @@
+<h2>Product backlog burndown help</h2>
+
+<p>Product backlog burndown shows the progress of the team in story points
+along the Sprints and the prediction based on team velocity of future
+Sprints.</p>
+
+<h3>Understanding the burndown</h3>
+
+<p>The line (or lines in multi-project teams) represent the pending
+SPs of Sprint PBIs day by day (this is not related in any way with the
+PBI SPs field, nevertheless first PBI pending SPs value uses to be equal to the
+SPs field).</p>
+
+<%= render :partial => 'help/product_backlog/velocity_modes',
+           :locals => {:links => links} %>
+
+<%= render :partial => 'help/burndown_multi_project',
+           :locals => {:links => links} %>

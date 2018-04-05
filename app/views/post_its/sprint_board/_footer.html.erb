@@ -1,0 +1,16 @@
+<%- there_is_last_sprint = (!(project.last_sprint.nil?))
+    render_move_to_last_sprint = (there_is_last_sprint and
+                                  ((sprint.is_product_backlog?) or (sprint.id != project.last_sprint.id)))
+    menu_needed = render_move_to_last_sprint -%>
+<%- if menu_needed -%>
+  <div class="contextual scrum-menu">
+    <%- if User.current.allowed_to?(:edit_issues, project) and
+           User.current.allowed_to?(:edit_sprint_board, project) and
+           sprint.open? -%>
+      <%- if render_move_to_last_sprint -%>
+        <%= link_to(l(:label_move_not_closed_pbis_to_last_sprint), move_not_closed_pbis_to_last_sprint_path(sprint),
+                    :method => :post, :class => 'icon icon-sprint-board') %>
+      <%- end -%>
+    <%- end -%>
+  </div>
+<%- end -%>

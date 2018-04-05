@@ -1,0 +1,28 @@
+= Redmine Scrum plugin
+
+== Main features
+
+Take a look to https://redmine.ociotec.com/projects/redmine-plugin-scrum or
+https://redmine.ociotec.com/projects/redmine-plugin-scrum/wiki for further
+details.
+
+== Access to plugin source code
+
+If you want to access to the plugin source code repository you need to
+support this plugin via https://www.patreon.com/ociotec (check tier with GIT
+access).
+
+If not you can always download a tagged version of it at:
+https://redmine.ociotec.com/projects/redmine-plugin-scrum.
+
+== Installation instructions
+
+As any other Redmine plugin (you need GitLab access, take a look to
+https://www.patreon.com/ociotec in order to gain this access):
+
+    cd <redmine-path>/plugins
+    git clone ssh://git@git.ociotec.com:10022/redmine/scrum.git
+    cd ..
+    bundle exec rake redmine:plugins:migrate
+
+Finally restart your Redmine installation.

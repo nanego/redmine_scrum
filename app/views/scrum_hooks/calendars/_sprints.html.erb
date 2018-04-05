@@ -1,0 +1,62 @@
+<script language="javascript">
+  function AddSprintToDay(sprintName, sprintUrl, day, week, start)
+  {
+    var cellElement = null;
+    var cellElementWeekNumber = null;
+    var dayOneFound = false;
+    var elements = document.getElementsByTagName("*");
+    for (var i = 0; (cellElement == null) && (i < elements.length); i++)
+    {
+      if (elements[i].className == "day-num")
+      {
+        var oneDay = parseInt(elements[i].childNodes[0].nodeValue);
+        if ((!dayOneFound) && (oneDay == 1))
+        {
+          dayOneFound = true;
+        }
+        if (dayOneFound && (oneDay == day))
+        {
+          cellElement = elements[i].parentNode;
+          if (cellElement != null)
+          {
+            var cellParentTr = cellElement.parentNode;
+            if (cellParentTr != null)
+            {
+              var cellParentTrFirstId = cellParentTr.childNodes[1];
+              if (cellParentTrFirstId != null)
+              {
+                cellElementWeekNumber = parseInt(cellParentTrFirstId.innerText);
+              }
+              if ((cellElementWeekNumber != null) && (cellElementWeekNumber == week))
+              {
+                cellElement = elements[i].parentNode;
+              }
+              else
+              {
+                cellElement = null;
+              }
+            }
+          }
+        }
+      }
+    }
+    if (cellElement != null)
+    {
+      var link = document.createElement("a");
+      link.innerHTML = sprintName;
+      link.href = sprintUrl;
+      var sprint = document.createElement("span");
+      sprint.className = "icon icon-sprint-" + (start ? "start" : "end");
+      sprint.appendChild(link);
+      cellElement.appendChild(sprint);
+    }
+  }
+  <%- if sprints and sprints.any? -%>
+    <%- sprints.each do |sprint| -%>
+      AddSprintToDay("<%= sprint[:name] %>", "<%= sprint[:url] %>", <%= sprint[:day] %>,
+                     <%= sprint[:week] %>, <%= sprint[:start] ? 'true' : 'false' %>);
+    <%- end -%>
+  <%- end -%>
+</script>
+
+<%= render :partial => 'common/scrum_footer' %>

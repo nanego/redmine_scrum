@@ -1,0 +1,58 @@
+<%- if @issue.scrum? -%>
+  <%= issue_fields_rows do |rows|
+    if @issue.sprint.nil?
+      content = ''
+    else
+      if @issue.sprint.is_product_backlog
+        object = project_product_backlog_index_path(@issue.sprint.project)
+      else
+        object = @issue.sprint
+      end
+      content = link_to(h(@issue.sprint.name), object)
+    end
+    rows.left l(:label_sprint), raw(content), :class => 'sprint'
+
+    if @issue.is_pbi?
+      content = ''
+      if @issue.has_remaining_story_points?
+        if User.current.allowed_to?(:view_pending_effort, @issue.project)
+          content = render_sps(@issue.remaining_story_points) +
+                    raw('&nbsp;') +
+                    link_to('', '#', :class => 'icon icon-zoom-in',
+                            :onclick => '$("#pending_effort").dialog({modal: true});') +
+                    render(:partial => 'scrum_hooks/issues/pending_effort', :locals => {:issue => @issue})
+        end
+        if User.current.allowed_to?(:edit_pending_effort, @issue.project)
+          content += link_to('', '#', :class => 'icon icon-edit',
+                             :onclick => '$("#edit_pending_effort").dialog({modal: true});') +
+                     render(:partial => 'scrum_hooks/issues/edit_pending_effort', :locals => {:issue => @issue})
+        end
+      end
+      if Scrum::Setting.use_remaining_story_points? and
+         User.current.allowed_to?(:view_pending_effort, @issue.project) or
+         User.current.allowed_to?(:edit_pending_effort, @issue.project)
+        rows.right l(:label_remaining_story_point_plural), raw(content), :class => 'pending_effort'
+      end
+    elsif @issue.is_task?
+      content = ''
+      if @issue.has_pending_effort?
+        if User.current.allowed_to?(:view_pending_effort, @issue.project)
+          content = raw(@issue.pending_effort ? l('datetime.distance_in_words.x_hours', :count => @issue.pending_effort) : '') +
+                    raw('&nbsp;') +
+                    link_to('', '#', :class => 'icon icon-zoom-in',
+                            :onclick => '$("#pending_effort").dialog({modal: true});') +
+                    render(:partial => 'scrum_hooks/issues/pending_effort', :locals => {:issue => @issue})
+        end
+        if User.current.allowed_to?(:edit_pending_effort, @issue.project)
+          content += link_to('', '#', :class => 'icon icon-edit',
+                             :onclick => '$("#edit_pending_effort").dialog({modal: true});') +
+                     render(:partial => 'scrum_hooks/issues/edit_pending_effort', :locals => {:issue => @issue})
+        end
+      end
+      if User.current.allowed_to?(:view_pending_effort, @issue.project) or
+         User.current.allowed_to?(:edit_pending_effort, @issue.project)
+        rows.right l(:field_pending_effort), raw(content), :class => 'pending_effort'
+      end
+    end
+  end %>
+<%- end -%>

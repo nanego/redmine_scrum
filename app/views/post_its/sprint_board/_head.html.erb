@@ -1,0 +1,46 @@
+<table class="box attributes" width="100%">
+  <tr valign="top">
+    <td width="300px">
+      <div class="tabular">
+        <p>
+          <label><%= l(:label_sprint) %>:</label>
+          <%- options = project.sprints.collect{ |other_sprint|
+                [other_sprint.name, path.call(other_sprint, :type => @type)]}
+              options = options_for_select(options, path.call(sprint, :type => @type)) -%>
+          <%= select_tag "selected_sprint_id", options,
+                         :onchange => "if (this.value != '') { window.location = this.value; }" %>
+        </p>
+        <p>
+          <label><%= l(:field_start_date) %>:</label>
+          <%= format_date sprint.sprint_start_date %>
+        </p>
+        <p>
+          <label><%= l(:field_end_date) %>:</label>
+          <%= format_date sprint.sprint_end_date %>
+        </p>
+        <%- if params[:action] == 'show' -%>
+          <p>
+            <label><%= l(:label_filter_by_assignee) %>:</label>
+            <select id="tasks-assignees"></select>
+          </p>
+        <%- end -%>
+        <%- if sprint.shared and @subprojects and !@only_one -%>
+          <p>
+            <label><%= l(:label_filter_by_project) %>:</label>
+            <%- options = options_for_select(@subprojects, @selected_subproject) -%>
+            <%= select_tag('select_project_id', options,
+                           :onchange => "if (this.value != '') { window.location = this.value; }") %>
+          </p>
+        <%- end -%>
+      </div>
+    </td>
+    <td>
+      <%- if !(sprint.description.blank?) -%>
+        <%= textilizable(sprint.description) %>
+      <%- end -%>
+    </td>
+    <%- if Scrum::Setting.show_project_totals_on_sprint -%>
+      <%= render :partial => 'post_its/stats', :locals => {:stats => @stats} %>
+    <%- end -%>
+  </tr>
+</table>

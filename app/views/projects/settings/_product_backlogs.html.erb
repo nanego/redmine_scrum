@@ -1,0 +1,39 @@
+<div class="contextual scrum-menu">
+  <%= link_to(l(:label_product_backlog_new),
+              new_project_sprint_path(@project, :back_url => '', :create_product_backlog => true),
+              :class => 'icon icon-add') if User.current.allowed_to?(:manage_sprints, @project) %>
+  <%= render_scrum_help('product_backlogs') %>
+</div>
+
+<%- if @project.product_backlogs.empty? -%>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+<%- else -%>
+  <table class="list">
+    <thead>
+      <tr>
+        <th><%= l(:field_name) %></th>
+        <th><%= l(:field_status) %></th>
+        <th><%= l(:field_shared) %></th>
+        <th><%= l(:label_pbi_plural) %></th>
+        <th style="width:15%"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for sprint in @project.product_backlogs %>
+        <tr class="version <%= cycle 'odd', 'even' %> <%= sprint.status %>">
+          <td><%= link_to(h(sprint.name), product_backlog_path(sprint)) %></td>
+          <td class="status"><%= l("label_sprint_status_#{sprint.status}") %></td>
+          <td align="center"><%= checked_image sprint.shared %></td>
+          <td align="center"><%= sprint.pbis.count %></td>
+          <td class="buttons">
+            <%- if User.current.allowed_to?(:manage_sprints, @project) -%>
+              <%= link_to l(:button_edit), edit_sprint_path(sprint),
+                          :class => 'icon icon-edit' %>
+              <%= delete_link sprint_path(sprint) %>
+            <%- end -%>
+          </td>
+        </tr>
+      <% end; reset_cycle %>
+    <tbody>
+  </table>
+<%- end -%>

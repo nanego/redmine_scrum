@@ -1,0 +1,30 @@
+<%- if defined?(@exception) -%>
+  <%- message = l(:error_updating_pbi, :message => @exception.message) -%>
+  <%- message_class = "error" -%>
+  $("#popup-messages").html("<div class=\"flash <%= message_class %>\"><%= message %></div>");
+<%- else -%>
+  $("#ajax-modal").dialog("close");
+  <%- if @pbi.sprint.is_product_backlog? -%>
+    $("#<%= "pbi_#{@pbi.id}" %>").replaceWith("<%=
+        escape_javascript(render(:partial => 'post_its/product_backlog/pbi',
+                                 :formats => [:html],
+                                 :locals => {:project => @project,
+                                             :pbi => @pbi,
+                                             :read_only => false})).html_safe
+      %>");
+  <%- else -%>
+    <%- sprint_board_id = 'sprint_board' -%>
+    <%- task_statuses = IssueStatus.task_statuses -%>
+    $("#<%= "pbi_#{@pbi.id}_row" %>").replaceWith("<%=
+        escape_javascript(render(:partial => 'post_its/sprint_board/pbi_row',
+                                 :formats => [:html],
+                                 :locals => {:project => @project,
+                                             :sprint_board_id => sprint_board_id,
+                                             :pbi => @pbi,
+                                             :task_statuses => task_statuses})).html_safe
+      %>");
+  <%- end -%>
+  <%- if (!(IssueStatus.pbi_statuses.include?(@pbi.status))) -%>
+    $("#<%= @pbi.sprint.is_product_backlog? ? "pbi_#{@pbi.id}" : "pbi_#{@pbi.id}_row" %>").remove();
+  <%- end -%>
+<%- end -%>

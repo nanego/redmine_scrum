@@ -1,0 +1,22 @@
+<div class="scrum-content">
+  <div class="scrum-contextual">
+    <%= link_to('',
+                '#',
+                :title => "#{l(:label_fullscreen)}",
+                :class => 'icon icon-fullscreen',
+                :onclick => "$('.scrum-content').toggleClass('scrum-content-fullscreen');") %>
+    <%= link_to('',
+                '#',
+                :title => "#{l(:label_exit_fullscreen)}",
+                :class => 'icon icon-normal-screen',
+                :onclick => "$('.scrum-content').toggleClass('scrum-content-fullscreen');") %>
+    <%= javascript_tag do %>
+      $(document).keyup(function(event) {
+        if (event.keyCode == 27) {
+          $('.scrum-content').removeClass('scrum-content-fullscreen');
+        }
+      });
+    <% end %>
+  </div>
+  <%= yield %>
+</div>

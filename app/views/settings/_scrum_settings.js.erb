@@ -1,0 +1,12 @@
+<%= javascript_tag do %>
+  $("[id^='settings_'][id$='_tracker_ids']").change(function() {
+    $("[id^='fields_tracker_']").each(function(index, object) {
+      var tracker_id = object.id.split("fields_tracker_")[1];
+      var visible = (($("#settings_pbi_tracker_ids option[value='" + tracker_id + "']").prop("selected")) ||
+                     ($("#settings_task_tracker_ids option[value='" + tracker_id + "']").prop("selected")));
+      $("#fields_tracker_" + tracker_id + ", " +
+        "#tracker_" + tracker_id + "_color, " +
+        "#sprint_board_fields_tracker_" + tracker_id).css("display", visible ? "block" : "none");
+    });
+  });
+<% end %>

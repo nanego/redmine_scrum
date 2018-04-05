@@ -1,0 +1,52 @@
+<h3 class="title"><%= "#{@pbi.tracker.name} ##{@pbi.id}" %></h3>
+
+<%- there_is_last_sprint = (!(@project.last_sprint.nil?))
+    there_is_product_backlog = (!(@project.product_backlogs.empty?))
+    render_move_to_last_sprint = (there_is_last_sprint and
+                                  ((@pbi.sprint.is_product_backlog?) or (@pbi.sprint.id != @project.last_sprint.id)))
+    render_move_to_product_backlog = (there_is_product_backlog and
+                                     ((!(@project.product_backlogs.include?(@pbi.sprint))) or
+                                      (@project.product_backlogs.size > 1)))
+    render_move_pbi = (there_is_product_backlog and (@pbi.sprint.id == @project.product_backlogs.first.id) and
+                       User.current.allowed_to?(:sort_product_backlog, @project))
+    menu_needed = (render_move_to_last_sprint or render_move_to_product_backlog or render_move_pbi) -%>
+<%- if menu_needed -%>
+  <div class="modal-issue-menu">
+    <%- if render_move_pbi -%>
+      <%= form_tag(move_pbi_path(@pbi, :before), :method => :get, :remote => true,
+                   :id => 'move_pbi_before') do %>
+        <%= link_to(l(:label_move_pbi_before), '#', :onclick => "$('#move_pbi_before').submit(); return(false);") %>:
+        <%= text_field_tag(:before_other_pbi, '', :size => 3) %>
+        <%= javascript_tag "observeAutocompleteField('before_other_pbi', '#{escape_javascript auto_complete_issues_path(:project_id => @project, :scope => (Setting.cross_project_issue_relations? ? 'all' : nil))}')" %>
+      <% end %>
+      <%= form_tag(move_pbi_path(@pbi, :after), :method => :get, :remote => true,
+                   :id => 'move_pbi_after') do %>
+        <%= link_to(l(:label_move_pbi_after), '#', :onclick => "$('#move_pbi_after').submit(); return(false);") %>:
+        <%= text_field_tag(:after_other_pbi, '', :size => 3) %>
+        <%= javascript_tag "observeAutocompleteField('after_other_pbi', '#{escape_javascript auto_complete_issues_path(:project_id => @project, :scope => (Setting.cross_project_issue_relations? ? 'all' : nil))}')" %>
+      <% end %>
+    <%- end -%>
+    <%- if render_move_to_last_sprint -%>
+      <%= link_to(l(:label_move_pbi_to_last_sprint), move_to_last_sprint_path(@pbi),
+                  :remote => true, :method => :post, :class => "icon icon-sprint-board") %>
+    <%- end -%>
+    <%- if render_move_to_product_backlog -%>
+      <%- @project.product_backlogs.each do |product_backlog| -%>
+        <%= link_to(l(:label_move_pbi_to_name, :name => product_backlog.name),
+                    move_to_product_backlog_path(@pbi, :id => product_backlog.id),
+                    :remote => true, :method => :post, :class => "icon icon-product-backlog") %>
+      <%- end -%>
+    <%- end -%>
+  </div>
+<%- end -%>
+
+<div id="popup-messages"></div>
+
+<%= labelled_form_for @pbi, :url => update_pbi_path(@pbi), :method => :post, :remote => true do |f| %>
+  <%= back_url_hidden_field_tag %>
+  <%= f.hidden_field :tracker_id, :value => @pbi.tracker_id %>
+  <%= f.hidden_field :sprint_id, :value => @pbi.sprint_id %>
+  <%= error_messages_for 'pbi' %>
+  <%= render :partial => 'scrum/edit_issue_attributes', :formats => [:html],
+             :locals => {:f => f, :issue => @pbi} %>
+<% end %>

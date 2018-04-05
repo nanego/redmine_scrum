@@ -1,0 +1,178 @@
+<%= render :partial => 'common/scrum_sprint_menu' %>
+
+<h2>
+  <%= l(:label_sprint_stats) %>
+</h2>
+
+<%= render :partial => 'post_its/sprint_board/head',
+           :locals => {:project => @project, :sprint => @sprint, :path => method(:stats_sprint_path)} %>
+
+<% content_for :header_tags do %>
+  <%= javascript_include_tag "d3.#{Rails.env.development? ? '' : 'min.'}js", :plugin => 'scrum' %>
+  <%= javascript_include_tag 'xcharts.min.js', :plugin => 'scrum' %>
+  <%= javascript_include_tag "nv.d3.#{Rails.env.development? ? '' : 'min.'}js", :plugin => 'scrum' %>
+  <%= stylesheet_link_tag 'xcharts.min.css', :plugin => 'scrum' %>
+  <%= stylesheet_link_tag "nv.d3.#{Rails.env.development? ? '' : 'min.'}css", :plugin => 'scrum' %>
+<% end %>
+
+<h3 align="center"><%= l(:label_estimated_vs_done_effort) %></h3>
+<%- if @members_efforts.count < 1 -%>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+<%- else -%>
+  <table class="scrum-stats-table">
+    <thead>
+      <tr class="double-row">
+        <th align="left"><%= l(:label_member) %></th>
+        <th></th>
+        <%- @days.each do |day| -%>
+          <th align="center"><%= day[:label] %></th>
+        <%- end -%>
+        <th align="center"><%= l(:label_total) %></th>
+       </tr>
+    </thead>
+    <tbody>
+      <%- @members_efforts.each do |member| -%>
+        <tr class="double-row">
+          <td align="left" rowspan="2"><%= link_to_user(member[:member]) %></td>
+          <td align="right" class="comment"><%= l(:label_estimated_effort) %></td>
+          <%- @days.each do |day| -%>
+            <td align="center">
+              <%- day_info = member[:estimated_efforts][:days][day[:date]] -%>
+              <%- if day_info -%>
+                <%= "#{day_info.round(2)} h" %>
+              <%- end -%>
+            </td>
+          <%- end -%>
+          <td align="center" class="total">
+            <%= member[:estimated_efforts][:total].round(2) %> h
+          </td>
+        </tr>
+        <tr class="double-row">
+          <td align="right" class="comment"><%= l(:label_done_effort) %></td>
+          <%- @days.each do |day| -%>
+            <td align="center">
+              <%- day_info = member[:done_efforts][:days][day[:date]] -%>
+              <%- if day_info -%>
+                <%= "#{day_info.round(2)} h" %>
+              <%- end -%>
+            </td>
+          <%- end -%>
+          <td align="center" class="total">
+            <%= member[:done_efforts][:total].round(2) %> h
+          </td>
+        </tr>
+      <%- end -%>
+      <%- if @members_efforts.count > 1 -%>
+        <tr class="double-row">
+          <td align="left" rowspan="2" class="total"><%= l(:label_total) %></td>
+          <td align="right" class="comment"><%= l(:label_estimated_effort) %></td>
+          <%- @days.each do |day| -%>
+            <td align="center" class="total">
+              <%- day_info = @estimated_efforts_totals[:days][day[:date]] -%>
+              <%- if day_info -%>
+                <%= "#{day_info.round(2)} h" %>
+              <%- end -%>
+            </td>
+          <%- end -%>
+          <td align="center" class="total">
+            <%= @estimated_efforts_totals[:total].round(2) %> h
+           </td>
+        </tr>
+        <tr class="double-row">
+          <td align="right" class="comment"><%= l(:label_done_effort) %></td>
+          <%- @days.each do |day| -%>
+            <td align="center" class="total">
+              <%- day_info = @done_efforts_totals[:days][day[:date]] -%>
+              <%- if day_info -%>
+                <%= "#{day_info.round(2)} h" %>
+              <%- end -%>
+            </td>
+          <%- end -%>
+          <td align="center" class="total">
+            <%= @done_efforts_totals[:total].round(2) %> h
+           </td>
+        </tr>
+      <%- end -%>
+    </tbody>
+  </table>
+<%- end -%>
+
+<br />
+<br />
+
+<h3 align="center"><%= l(:label_sps_by_pbi_category) %></h3>
+<%- if @sps_by_pbi_category.count < 1 -%>
+    <p class="nodata"><%= l(:label_no_data) %></p>
+<%- else -%>
+    <%= render :partial => 'common/stat_graph_and_table',
+               :locals => {:graph => {:id => 'stats_sps_per_category', :width => 400, :height => 400},
+                           :element => {:label => l(:label_issue_category_plural), :name => :category},
+                           :unit => {:label => l(:label_story_point_unit), :plural_label => l(:label_story_point_plural)},
+                           :rows => @sps_by_pbi_category,
+                           :total => @sps_by_pbi_category_total} %>
+<%- end -%>
+
+<br />
+<br />
+
+<h3 align="center"><%= l(:label_sps_by_pbi_type) %></h3>
+<%- if @sps_by_pbi_type.count < 1 -%>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+<%- else -%>
+  <%= render :partial => 'common/stat_graph_and_table',
+             :locals => {:graph => {:id => 'stats_sps_per_pbi_type', :width => 400, :height => 400},
+                         :element => {:label => l(:label_tracker_plural), :name => :tracker},
+                         :unit => {:label => l(:label_story_point_unit), :plural_label => l(:label_story_point_plural)},
+                         :rows => @sps_by_pbi_type,
+                         :total => @sps_by_pbi_type_total} %>
+<%- end -%>
+
+<br />
+<br />
+
+<h3 align="center"><%= l(:label_sps_by_pbi_creation_date) %></h3>
+<%- if @sps_by_pbi_creation_date.count < 1 -%>
+    <p class="nodata"><%= l(:label_no_data) %></p>
+<%- else -%>
+    <%= render :partial => 'common/stat_graph_and_table',
+               :locals => {:graph => {:id => 'stats_sps_by_creation_date', :width => 400, :height => 400},
+                           :element => {:label => l(:label_tracker_plural), :name => :created_on},
+                           :unit => {:label => l(:label_story_point_unit), :plural_label => l(:label_story_point_plural)},
+                           :rows => @sps_by_pbi_creation_date,
+                           :total => @sps_by_pbi_creation_date_total} %>
+<%- end -%>
+
+<br />
+<br />
+
+<h3 align="center"><%= l(:label_time_by_activity) %></h3>
+<%- if @effort_by_activity.count < 1 -%>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+<%- else -%>
+    <%= render :partial => 'common/stat_graph_and_table',
+               :locals => {:graph => {:id => 'stats_time_per_activity', :width => 400, :height => 400},
+                           :element => {:label => l(:enumeration_activities), :name => :activity},
+                           :unit => {:label => 'h', :plural_label => l(:label_time_entry_plural)},
+                           :rows => @effort_by_activity,
+                           :total => @effort_by_activity_total} %>
+<%- end -%>
+
+<%- if User.current.allowed_to?(:view_sprint_stats_by_member, @project) -%>
+
+<br />
+<br />
+
+<h3 align="center"><%= l(:label_time_by_member_and_activity) %></h3>
+<div id="<%= @efforts_by_member_and_activity_chart[:id] %>">
+  <svg style="height: <%= @efforts_by_member_and_activity_chart[:height] %>px;">
+  </svg>
+</div>
+<%= render :partial => 'common/bar_chart',
+           :formats => [:js],
+           :locals => {:graph => @efforts_by_member_and_activity_chart,
+                       :element => {:label => l(:enumeration_activities), :name => :activity},
+                       :rows => @efforts_by_member_and_activity} %>
+
+<%- end -%>
+
+<%= render :partial => 'common/scrum_footer' %>

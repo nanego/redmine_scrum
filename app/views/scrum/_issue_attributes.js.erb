@@ -1,0 +1,18 @@
+<%- if issue.field?(:estimated_hours) and
+    issue.is_task? and
+    User.current.allowed_to?(:edit_pending_effort, issue.project) -%>
+  <%= javascript_tag do %>
+    var changeEstimatedHours = !$("#issue_estimated_hours").val();
+    var changePendingEffort = !$("#issue_pending_effort").val();
+    $("#issue_estimated_hours").change(function() {
+      if (changePendingEffort && $("#issue_estimated_hours").val()) {
+        $("#issue_pending_effort").val($("#issue_estimated_hours").val());
+      }
+    });
+    $("#issue_pending_effort").change(function() {
+      if (changeEstimatedHours && $("#issue_pending_effort").val()) {
+        $("#issue_estimated_hours").val($("#issue_pending_effort").val());
+      }
+    });
+  <% end %>
+<%- end -%>

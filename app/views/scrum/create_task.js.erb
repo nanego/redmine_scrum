@@ -1,0 +1,25 @@
+<%- if @continue or defined?(@exception) -%>
+	<%- if defined?(@exception) -%>
+		<%- message = l(:error_creating_task, :message => @exception.message)
+				message_class = "error" -%>
+	<%- else -%>
+		$("#new_issue").each (function() {
+			this.reset();
+		});
+		<%- message = l(:notice_task_created)
+				message_class = "notice" -%>
+	<%- end -%>
+	$("#popup-messages").html("<div class=\"flash <%= message_class %>\"><%= message %></div>");
+<%- else -%>
+	$("#ajax-modal").dialog("close");
+<%- end -%>
+<%- if !defined?(@exception) -%>
+	<%- pbi_row = "pbi_#{@task.parent.id}_row" -%>
+	if ($("#<%= pbi_row %>").length > 0) {
+		$("#<%= pbi_row %>").replaceWith("<%=
+			escape_javascript(render :partial => "post_its/sprint_board/pbi_row", :formats => [:html],
+															 :locals => {:project => @project, :pbi => @task.parent,
+																					 :task_statuses => IssueStatus.task_statuses}).html_safe
+		%>");
+	}
+<%- end -%>

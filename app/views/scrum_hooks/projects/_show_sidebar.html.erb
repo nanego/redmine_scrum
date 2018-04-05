@@ -1,0 +1,8 @@
+<%- if @project and @project.module_enabled?(:scrum) -%>
+  <%- allow_scrum_stats = User.current.allowed_to?(:view_scrum_stats, @project) -%>
+  <%- if allow_scrum_stats -%>
+    <h3><%= l(:label_scrum) %></h3>
+    <%= link_to(l(:label_scrum_stats), project_scrum_stats_path(@project),
+                :class => 'icon icon-stats') if allow_scrum_stats %>
+  <%- end -%>
+<%- end -%>

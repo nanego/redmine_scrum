@@ -1,0 +1,11 @@
+<h3 class="title"><%= @issue.tracker.name %></h3>
+
+<div id="popup-messages"></div>
+
+<%= labelled_form_for @issue, :url => update_task_path(@issue), :method => :post, :remote => true do |f| %>
+  <%= back_url_hidden_field_tag %>
+  <%= f.hidden_field :tracker_id, :value => @issue.tracker_id %>
+  <%= error_messages_for "task" %>
+  <%= render :partial => "scrum/edit_issue_attributes", :formats => [:html],
+             :locals => {:f => f, :issue => @issue} %>
+<% end %>

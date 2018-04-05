@@ -1,0 +1,335 @@
+<div class="contextual scrum-menu">
+  <%= render :partial => 'license' %>
+  <%= render_scrum_help %>
+</div>
+<br />
+<br />
+
+<fieldset>
+  <legend><%= l(:label_settings) %></legend>
+  <p>
+    <label><%= l(:label_setting_render_plugin_tips) %>:</label>
+    <%= hidden_field_tag('settings[render_plugin_tips]', 0) %>
+    <%= check_box_tag('settings[render_plugin_tips]', 1,
+                      Scrum::Setting.render_plugin_tips, :autofocus => 'autofocus') %>
+  </p>
+  <p>
+    <label><%= l(:label_setting_story_points_custom_field) %>:</label>
+    <%- custom_fields = CustomField.where(:type => 'IssueCustomField', :field_format => ['int', 'float', 'string', 'list'])
+        custom_fields = custom_fields.collect{|c| [c.name, c.id]}
+        options = options_for_select(custom_fields, Scrum::Setting.story_points_custom_field_id) -%>
+    <%= select_tag 'settings[story_points_custom_field_id]', options, :include_blank => true %>
+  </p>
+  <p>
+    <label><%= l(:label_setting_blocked_custom_field) %>:</label>
+    <%- custom_fields = CustomField.where(:type => 'IssueCustomField', :field_format => ['bool'])
+        custom_fields = custom_fields.collect{|c| [c.name, c.id]}
+        options = options_for_select(custom_fields, Scrum::Setting.blocked_custom_field_id) -%>
+    <%= select_tag 'settings[blocked_custom_field_id]', options, :include_blank => true %>
+  </p>
+  <p>
+    <label><%= l(:label_setting_simple_pbi_custom_field) %>:</label>
+    <%- custom_fields = CustomField.where(:type => 'IssueCustomField', :field_format => ['bool'])
+        custom_fields = custom_fields.collect{|c| [c.name, c.id]}
+        options = options_for_select(custom_fields, Scrum::Setting.simple_pbi_custom_field_id) -%>
+    <%= select_tag 'settings[simple_pbi_custom_field_id]', options, :include_blank => true %>
+  </p>
+  <%- trackers = Tracker.all.collect{|t| [t.name, t.id]} -%>
+  <p>
+    <label><%= l(:label_pbi_plural) %>:</label>
+    <%- options = options_for_select(trackers, Scrum::Setting.pbi_tracker_ids) -%>
+    <%= select_tag 'settings[pbi_tracker_ids]', options, :multiple => true %>
+  </p>
+  <p>
+    <label><%= l(:label_task_plural) %>:</label>
+    <%- options = options_for_select(trackers, Scrum::Setting.task_tracker_ids) -%>
+    <%= select_tag 'settings[task_tracker_ids]', options, :multiple => true %>
+  </p>
+  <%- Tracker.all.each do |tracker| -%>
+    <%- included = (Scrum::Setting.pbi_tracker_ids.include?(tracker.id) or
+                    Scrum::Setting.task_tracker_ids.include?(tracker.id)) -%>
+    <p id="fields_tracker_<%= tracker.id %>"
+       style="display: <%= included ? 'block' : 'none' %>;">
+      <label><%= l(:label_setting_fields_on_tracker, :tracker => tracker.name) %></label>
+      <%- fields = tracker.core_fields.collect{|f| [l("field_#{f}".sub(/_id$/, '')), f]}
+          options = options_for_select(fields, Scrum::Setting.tracker_fields(tracker.id)) -%>
+      <%= select_tag "settings[tracker_#{tracker.id}_fields]", options, :multiple => true %>
+      <%- custom_fields = tracker.custom_fields.collect{|f| [f.name, f.id]}
+          options = options_for_select(custom_fields, Scrum::Setting.tracker_fields(tracker.id, Scrum::Setting::TrackerFields::CUSTOM_FIELDS)) -%>
+      <%= select_tag "settings[tracker_#{tracker.id}_custom_fields]", options, :multiple => true %>
+    </p>
+  <%- end -%>
+  <p>
+    <label><%= l(:label_setting_auto_update_pbi_status) %>:</label>
+    <%= hidden_field_tag('settings[auto_update_pbi_status]', 0) %>
+    <%= check_box_tag('settings[auto_update_pbi_status]', 1,
+                      Scrum::Setting.auto_update_pbi_status) %>
+    <em><%= l(:label_setting_auto_update_pbi_status_explanation) %></em>
+  </p>
+  <p>
+    <label><%= l(:label_setting_update_pbi_status_if_all_tasks_are_closed) %>:</label>
+    <%- statuses = IssueStatus.all.collect{|s| [s.name, s.id]} -%>
+    <%- options = options_for_select(statuses, Scrum::Setting.closed_pbi_status_id) -%>
+    <%= select_tag 'settings[closed_pbi_status_id]', options, :include_blank => true %>
+  </p>
+  <p>
+    <label><%= l(:label_setting_pbi_is_closed_if_tasks_are_closed) %>:</label>
+    <%= hidden_field_tag('settings[pbi_is_closed_if_tasks_are_closed]', 0) %>
+    <%= check_box_tag('settings[pbi_is_closed_if_tasks_are_closed]', 1,
+                      Scrum::Setting.pbi_is_closed_if_tasks_are_closed) %>
+    <em><%= l(:label_setting_pbi_is_closed_if_tasks_are_closed_explanation) %></em>
+  </p>
+  <p>
+    <label><%= l(:label_setting_use_remaining_story_points) %>:</label>
+    <%= hidden_field_tag('settings[use_remaining_story_points]', 0) %>
+    <%= check_box_tag('settings[use_remaining_story_points]', 1,
+                      Scrum::Setting.use_remaining_story_points) %>
+    <em><%= l(:label_setting_use_remaining_story_points_explanation) %></em>
+  </p>
+</fieldset>
+
+<fieldset>
+  <legend><%= l(:label_post_it) %></legend>
+  <p>
+    <label><%= l(:label_setting_random_postit_rotation) %>:</label>
+    <%= hidden_field_tag('settings[random_posit_rotation]', 0) %>
+    <%= check_box_tag('settings[random_posit_rotation]', 1,
+                      Scrum::Setting.random_posit_rotation) %>
+  </p>
+  <%- colors = {1  => 'post-it-color-1',  2  => 'post-it-color-2', 3 => 'post-it-color-3',
+                4  => 'post-it-color-4',  5  => 'post-it-color-5', 6 => 'post-it-color-6',
+                7  => 'post-it-color-7',  8  => 'post-it-color-8'}
+      Tracker.all.each do |tracker| -%>
+    <%- included = (Scrum::Setting.pbi_tracker_ids.include?(tracker.id) or
+                    Scrum::Setting.task_tracker_ids.include?(tracker.id)) -%>
+    <p id="tracker_<%= tracker.id %>_color"
+       style="display: <%= included ? 'block' : 'none' %>;">
+      <label><%= tracker.name %>:</label>
+      <nobr>
+      <%- colors.each_pair do |color_id, color_css_class| -%>
+        <span style="white-space: nowrap;">
+          <%- setting_name = "tracker_#{tracker.id.to_s}_color"
+              selected = (@settings[setting_name].nil? and (color_id == 1)) ? true : (@settings[setting_name] == color_css_class) -%>
+          <%= radio_button_tag("settings[#{setting_name}]", color_css_class, selected) %>
+          <span class="post-it settings-post-it <%= color_css_class %>">
+            &nbsp;&nbsp;&nbsp;&nbsp;
+          </span>
+        </span>
+      <%- end -%>
+      </nobr>
+    </p>
+  <%- end -%>
+  <p>
+    <label><%= l(:label_doer) %>:</label>
+    <%- colors.each_pair do |color_id, color_css_class| -%>
+      <span style="white-space: nowrap;">
+        <%- selected = (color_css_class == Scrum::Setting.doer_color) -%>
+        <%= radio_button_tag('settings[doer_color]', color_css_class, selected) %>
+        <span class="post-it settings-post-it <%= color_css_class %>">
+          &nbsp;&nbsp;&nbsp;&nbsp;
+        </span>
+      </span>
+    <%- end -%>
+  </p>
+  <p>
+    <label><%= l(:label_reviewer) %>:</label>
+    <%- colors.each_pair do |color_id, color_css_class| -%>
+      <span style="white-space: nowrap;">
+        <%- selected = (color_css_class == Scrum::Setting.reviewer_color) -%>
+        <%= radio_button_tag('settings[reviewer_color]', color_css_class, selected) %>
+        <span class="post-it settings-post-it <%= color_css_class %>">
+          &nbsp;&nbsp;&nbsp;&nbsp;
+        </span>
+      </span>
+    <%- end -%>
+  </p>
+  <p>
+    <label><%= l(:label_blocked) %>:</label>
+    <%- colors.each_pair do |color_id, color_css_class| -%>
+      <span style="white-space: nowrap;">
+        <%- selected = (color_css_class == Scrum::Setting.blocked_color) -%>
+        <%= radio_button_tag('settings[blocked_color]', color_css_class, selected) %>
+        <span class="post-it settings-post-it <%= color_css_class %>">
+          &nbsp;&nbsp;&nbsp;&nbsp;
+        </span>
+      </span>
+    <%- end -%>
+  </p>
+</fieldset>
+
+<fieldset>
+  <legend><%= l(:label_sprint_board) %></legend>
+  <p>
+    <label><%= l(:label_setting_task_statuses) %>:</label>
+    <%- statuses = IssueStatus.all.collect{|s| [s.name, s.id]} -%>
+    <%- options = options_for_select(statuses, Scrum::Setting.task_status_ids) -%>
+    <%= select_tag 'settings[task_status_ids]', options, :multiple => true %>
+  </p>
+  <p>
+    <label><%= l(:label_setting_clear_new_tasks_assignee) %>:</label>
+    <%= hidden_field_tag('settings[clear_new_tasks_assignee]', 0) %>
+    <%= check_box_tag('settings[clear_new_tasks_assignee]', 1,
+                      Scrum::Setting.clear_new_tasks_assignee) %>
+  </p>
+  <p>
+    <label><%= l(:label_setting_pbi_statuses) %>:</label>
+    <%- statuses = IssueStatus.all.collect{|s| [s.name, s.id]} -%>
+    <%- options = options_for_select(statuses, Scrum::Setting.pbi_status_ids) -%>
+    <%= select_tag 'settings[pbi_status_ids]', options, :multiple => true %>
+  </p>
+  <p>
+    <label><%= l(:label_setting_verification_activities) %>:</label>
+    <%- activities = Enumeration.where(:type => 'TimeEntryActivity').collect{|s| [s.name, s.id]} -%>
+    <%- options = options_for_select(activities, Scrum::Setting.verification_activity_ids) -%>
+    <%= select_tag 'settings[verification_activity_ids]', options, :multiple => true %>
+  </p>
+  <p>
+    <label><%= l(:label_setting_inherit_pbi_attributes) %>:</label>
+    <%= hidden_field_tag('settings[inherit_pbi_attributes]', 0) %>
+    <%= check_box_tag('settings[inherit_pbi_attributes]', 1,
+                      Scrum::Setting.inherit_pbi_attributes) %>
+  </p>
+  <p>
+    <label>
+      <%= link_to('', '#', :class => "icon #{ScrumHelper::LOWEST_SPEED_ICON}") %>
+      <%= l(:label_setting_lowest_speed) %>:
+    </label>
+    <%= text_field_tag('settings[lowest_speed]',
+                       Scrum::Setting.lowest_speed) %>
+  </p>
+  <p>
+    <label>
+      <%= link_to('', '#', :class => "icon #{ScrumHelper::LOW_SPEED_ICON}") %>
+      <%= l(:label_setting_low_speed) %>:
+    </label>
+    <%= text_field_tag('settings[low_speed]',
+                       Scrum::Setting.low_speed) %>
+  </p>
+  <p>
+    <label>
+      <%= link_to('', '#', :class => "icon #{ScrumHelper::HIGH_SPEED_ICON}") %>
+      <%= l(:label_setting_high_speed) %>:
+    </label>
+    <%= text_field_tag('settings[high_speed]',
+                       Scrum::Setting.high_speed) %>
+  </p>
+  <p>
+    <label><%= l(:label_setting_render_pbis_speed) %>:</label>
+    <%= hidden_field_tag('settings[render_pbis_speed]', 0) %>
+    <%= check_box_tag('settings[render_pbis_speed]', 1,
+                      Scrum::Setting.render_pbis_speed) %>
+  </p>
+  <p>
+    <label><%= l(:label_setting_render_tasks_speed) %>:</label>
+    <%= hidden_field_tag('settings[render_tasks_speed]', 0) %>
+    <%= check_box_tag('settings[render_tasks_speed]', 1,
+                      Scrum::Setting.render_tasks_speed) %>
+  </p>
+  <%- Tracker.all.each do |tracker| -%>
+    <%- included = (Scrum::Setting.pbi_tracker_ids.include?(tracker.id) or
+                    Scrum::Setting.task_tracker_ids.include?(tracker.id)) -%>
+    <p id="sprint_board_fields_tracker_<%= tracker.id %>"
+       style="display: <%= included ? 'block' : 'none' %>;">
+      <label><%= l(:label_setting_sprint_board_fields_on_tracker, :tracker => tracker.name) %></label>
+      <%- fields = tracker.core_fields.select{|f| Scrum::Setting::sprint_board_fields.include?(f.to_sym)}.collect{|f| [l("field_#{f}".sub(/_id$/, '')), f]}
+          values = Scrum::Setting.tracker_fields(tracker.id, Scrum::Setting::TrackerFields::SPRINT_BOARD_FIELDS)
+          options = options_for_select(fields, values) -%>
+      <%= select_tag "settings[tracker_#{tracker.id}_sprint_board_fields]", options, :multiple => true %>
+      <%- custom_fields = tracker.custom_fields.collect{|f| [f.name, f.id]}
+          values = Scrum::Setting.tracker_fields(tracker.id, Scrum::Setting::TrackerFields::SPRINT_BOARD_CUSTOM_FIELDS)
+          options = options_for_select(custom_fields, values) -%>
+      <%= select_tag "settings[tracker_#{tracker.id}_sprint_board_custom_fields]", options, :multiple => true %>
+    </p>
+  <%- end -%>
+  <p>
+    <label><%= l(:label_setting_show_project_totals) %>:</label>
+    <%= hidden_field_tag('settings[show_project_totals_on_sprint]', 0) %>
+    <%= check_box_tag('settings[show_project_totals_on_sprint]', 1,
+                      Scrum::Setting.show_project_totals_on_sprint) %>
+  </p>
+</fieldset>
+
+<fieldset>
+  <legend><%= l(:label_sprint_burndown_chart) %></legend>
+  <p>
+    <label><%= l(:label_setting_sprint_burndown_day_zero) %>:</label>
+    <%= hidden_field_tag('settings[sprint_burndown_day_zero]', 0) %>
+    <%= check_box_tag('settings[sprint_burndown_day_zero]', 1,
+                      Scrum::Setting.sprint_burndown_day_zero) %>
+    <em><%= l(:label_setting_sprint_burndown_day_zero_explanation) %></em>
+  </p>
+</fieldset>
+
+<fieldset>
+  <legend><%= l(:label_product_backlog) %></legend>
+  <p>
+    <label><%= l(:label_setting_create_journal_on_pbi_position_change) %>:</label>
+    <%= hidden_field_tag('settings[create_journal_on_pbi_position_change]', 0) %>
+    <%= check_box_tag('settings[create_journal_on_pbi_position_change]', 1,
+                      Scrum::Setting.create_journal_on_pbi_position_change) %>
+  </p>
+  <p>
+    <label><%= l(:label_setting_check_dependencies_on_pbi_sorting) %>:</label>
+    <%= hidden_field_tag('settings[check_dependencies_on_pbi_sorting]', 0) %>
+    <%= check_box_tag('settings[check_dependencies_on_pbi_sorting]', 1,
+                      Scrum::Setting.check_dependencies_on_pbi_sorting) %>
+  </p>
+  <p>
+    <label><%= l(:label_setting_render_position_on_pbi) %>:</label>
+    <%= hidden_field_tag('settings[render_position_on_pbi]', 0) %>
+    <%= check_box_tag('settings[render_position_on_pbi]', 1,
+                      Scrum::Setting.render_position_on_pbi) %>
+  </p>
+  <p>
+    <label><%= l(:label_setting_render_category_on_pbi) %>:</label>
+    <%= hidden_field_tag('settings[render_category_on_pbi]', 0) %>
+    <%= check_box_tag('settings[render_category_on_pbi]', 1,
+                      Scrum::Setting.render_category_on_pbi) %>
+  </p>
+  <p>
+    <label><%= l(:label_setting_render_version_on_pbi) %>:</label>
+    <%= hidden_field_tag('settings[render_version_on_pbi]', 0) %>
+    <%= check_box_tag('settings[render_version_on_pbi]', 1,
+                      Scrum::Setting.render_version_on_pbi) %>
+  </p>
+  <p>
+    <label><%= l(:label_setting_render_author_on_pbi) %>:</label>
+    <%= hidden_field_tag('settings[render_author_on_pbi]', 0) %>
+    <%= check_box_tag('settings[render_author_on_pbi]', 1,
+                      Scrum::Setting.render_author_on_pbi) %>
+  </p>
+  <p>
+    <label><%= l(:label_setting_render_updated_on_pbi) %>:</label>
+    <%= hidden_field_tag('settings[render_updated_on_pbi]', 0) %>
+    <%= check_box_tag('settings[render_updated_on_pbi]', 1,
+                      Scrum::Setting.render_updated_on_pbi) %>
+  </p>
+  <p>
+    <label><%= l(:label_setting_show_project_totals) %>:</label>
+    <%= hidden_field_tag('settings[show_project_totals_on_backlog]', 0) %>
+    <%= check_box_tag('settings[show_project_totals_on_backlog]', 1,
+                      Scrum::Setting.show_project_totals_on_backlog) %>
+  </p>
+</fieldset>
+
+<fieldset>
+  <legend><%= l(:label_product_backlog_burndown_chart) %></legend>
+  <p>
+    <label><%= l(:label_setting_product_burndown_sprints) %>:</label>
+    <%= number_field_tag('settings[product_burndown_sprints]',
+                         Scrum::Setting.product_burndown_sprints,
+                         :min => 0) %>
+    <em><%= l(:label_setting_product_burndown_sprints_explanation) %></em>
+  </p>
+  <p>
+    <label><%= l(:label_setting_product_burndown_extra_sprints) %>:</label>
+    <%= number_field_tag('settings[product_burndown_extra_sprints]',
+                         Scrum::Setting.product_burndown_extra_sprints,
+                         :min => 0) %>
+    <em><%= l(:label_setting_product_burndown_extra_sprints_explanation) %></em>
+  </p>
+</fieldset>
+
+<%= render :partial => 'common/scrum_footer' %>
+
+<%= render :partial => 'scrum_settings', :formats => [:js] %>

@@ -1,0 +1,12 @@
+<%- Scrum::Setting.tracker_fields(issue.tracker.id, Scrum::Setting::TrackerFields::SPRINT_BOARD_CUSTOM_FIELDS).each do |custom_field_id| -%>
+    <%- custom_field = CustomField.find(custom_field_id)
+        field_value = issue.custom_field_values.select{|c| c.custom_field == custom_field}.first -%>
+    <%- if custom_field.visible_by?(issue.project, User.current) and
+           field_value.present? and field_value.value.present? and
+           (!field_value.value.is_a?(Array) or (field_value.value.any? and !field_value.value.first.blank?)) -%>
+        <%= content_tag("div", :title => custom_field.description) do %>
+            <span class="post-it-legend"><%= custom_field.name %>:</span>
+            <%= show_value(field_value) %>
+        <% end %>
+    <%- end -%>
+<%- end -%>

@@ -1,0 +1,609 @@
+.icon-burndown {
+	background-image: url(../images/icon-burndown-16.png);
+}
+
+.icon-sprint-board {
+	background-image: url(../images/icon-sprint-board-16.png);
+}
+
+.icon-sprint-end {
+	background-image: url(../images/icon-sprint-end-16.png);
+}
+
+.icon-sprint-start {
+	background-image: url(../images/icon-sprint-start-16.png);
+}
+
+.icon-product-backlog {
+	background-image: url(../images/icon-product-backlog-16.png);
+}
+
+.icon-release-plan {
+	background-image: url(../images/icon-release-plan-16.png);
+}
+
+.icon-move-top {
+    background-image: url(../images/icon-move-top-16.png);
+}
+
+.icon-move-bottom {
+    background-image: url(../images/icon-move-bottom-16.png);
+}
+
+.icon-fullscreen {
+	background-image: url(../images/icon-fullscreen-16.png);
+}
+
+.icon-normal-screen {
+	background-image: url(../images/icon-normal-screen-16.png);
+}
+
+.icon-major-deviation {
+	background-image: url(../../../images/exclamation.png);
+}
+
+.icon-minor-deviation {
+	background-image: url(../../../images/warning.png);
+}
+
+.icon-below-deviation {
+	background-image: url(../../../images/lightning.png);
+}
+
+.icon-log-time {
+	background-image: url(../../../images/time_add.png);
+}
+
+.float-icon {
+	float: right;
+	min-height: 16px;
+	padding-left: 16px;
+	padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.post-it, .post-it input {
+}
+
+.post-it {
+	overflow: hidden;
+	box-shadow: 4px 4px 7px rgba(0, 0, 0, 0.7);
+	-moz-box-shadow: 4px 4px 7px rgba(0, 0, 0, 0.7);
+	-o-box-shadow: 4px 4px 7px rgba(0, 0, 0, 0.7);
+	-webkit-box-shadow: 4px 4px 7px rgba(0, 0, 0, 0.7);
+	-transition: -transform 0.15s linear;
+	-moz-transition: -moz-transform 0.15s linear;
+	-o-transition: -o-transform 0.15s linear;
+	-webkit-transition: -webkit-transform 0.15s linear;
+}
+
+.post-it-scale:hover, .post-it-scale:hover {
+	z-index: 100;
+}
+
+.post-it-scale:hover {
+	-transform: scale(1.14);
+	-moz-transform: scale(1.14);
+	-o-transform: scale(1.14);
+	-webkit-transform: scale(1.14);
+}
+
+.post-it-small-scale:hover {
+	-transform: scale(1.02, 1.14);
+	-moz-transform: scale(1.02, 1.14);
+	-o-transform: scale(1.02, 1.14);
+	-webkit-transform: scale(1.02, 1.14);
+}
+
+.settings-post-it {
+	margin-right: 20px;
+	white-space: nowrap;
+	padding: 2px;
+	padding-right: 9px;
+	border-radius: 9px;
+}
+
+.post-it-color-1 {
+	background-image: -ms-linear-gradient(top, #FFFFE0 0%, #FFFE8D 100%);
+	background-image: -moz-linear-gradient(top, #FFFFE0 0%, #FFFE8D 100%);
+	background-image: -o-linear-gradient(top, #FFFFE0 0%, #FFFE8D 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFE0), color-stop(1, #FFFE8D));
+	background-image: -webkit-linear-gradient(top, #FFFFE0 0%, #FFFE8D 100%);
+	background-image: linear-gradient(to bottom, #FFFFE0 0%, #FFFE8D 100%);
+}
+
+.post-it-color-2 {
+	background-image: -ms-linear-gradient(top, #F7D6FF 0%, #E9B1FF 100%);
+	background-image: -moz-linear-gradient(top, #F7D6FF 0%, #E9B1FF 100%);
+	background-image: -o-linear-gradient(top, #F7D6FF 0%, #E9B1FF 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #F7D6FF), color-stop(1, #E9B1FF));
+	background-image: -webkit-linear-gradient(top, #F7D6FF 0%, #E9B1FF 100%);
+	background-image: linear-gradient(to bottom, #F7D6FF 0%, #E9B1FF 100%);
+}
+
+.post-it-color-3 {
+	background-image: -ms-linear-gradient(top, #C4FFCA 0%, #9CFFA4 100%);
+	background-image: -moz-linear-gradient(top, #C4FFCA 0%, #9CFFA4 100%);
+	background-image: -o-linear-gradient(top, #C4FFCA 0%, #9CFFA4 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #C4FFCA), color-stop(1, #9CFFA4));
+	background-image: -webkit-linear-gradient(top, #C4FFCA 0%, #9CFFA4 100%);
+	background-image: linear-gradient(to bottom, #C4FFCA 0%, #9CFFA4 100%);
+}
+
+.post-it-color-4 {
+	background-image: -ms-linear-gradient(top, #C8E7FF 0%, #A3BFD7 100%);
+	background-image: -moz-linear-gradient(top, #C8E7FF 0%, #A3BFD7 100%);
+	background-image: -o-linear-gradient(top, #C8E7FF 0%, #A3BFD7 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #C8E7FF), color-stop(1, #A3BFD7));
+	background-image: -webkit-linear-gradient(top, #C8E7FF 0%, #A3BFD7 100%);
+	background-image: linear-gradient(to bottom, #C8E7FF 0%, #A3BFD7 100%);
+}
+
+.post-it-color-5 {
+	background-image: -ms-linear-gradient(top, #FFE9C5 0%, #FFDC85 100%);
+	background-image: -moz-linear-gradient(top, #FFE9C5 0%, #FFDC85 100%);
+	background-image: -o-linear-gradient(top, #FFE9C5 0%, #FFDC85 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFE9C5), color-stop(1, #FFDC85));
+	background-image: -webkit-linear-gradient(top, #FFE9C5 0%, #FFDC85 100%);
+	background-image: linear-gradient(to bottom, #FFE9C5 0%, #FFDC85 100%);
+}
+
+.post-it-color-6 {
+	background-image: -ms-linear-gradient(top, #FFCCCC 0%, #FFB3B8 100%);
+	background-image: -moz-linear-gradient(top, #FFCCCC 0%, #FFB3B8 100%);
+	background-image: -o-linear-gradient(top, #FFCCCC 0%, #FFB3B8 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFCCCC), color-stop(1, #FFB3B8));
+	background-image: -webkit-linear-gradient(top, #FFCCCC 0%, #FFB3B8 100%);
+	background-image: linear-gradient(to bottom, #FFCCCC 0%, #FFB3B8 100%);
+}
+
+.post-it-color-7 {
+	background-image: -ms-linear-gradient(top, #FFCCF3 0%, #FFA4E5 100%);
+	background-image: -moz-linear-gradient(top, #FFCCF3 0%, #FFA4E5 100%);
+	background-image: -o-linear-gradient(top, #FFCCF3 0%, #FFA4E5 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFCCF3), color-stop(1, #FFA4E5));
+	background-image: -webkit-linear-gradient(top, #FFCCF3 0%, #FFA4E5 100%);
+	background-image: linear-gradient(to bottom, #FFCCF3 0%, #FFA4E5 100%);
+}
+
+.post-it-color-8 {
+	background-image: -ms-linear-gradient(top, #FAFAFA 0%, #DADADA 100%);
+	background-image: -moz-linear-gradient(top, #FAFAFA 0%, #DADADA 100%);
+	background-image: -o-linear-gradient(top, #FAFAFA 0%, #DADADA 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FAFAFA), color-stop(1, #DADADA));
+	background-image: -webkit-linear-gradient(top, #FAFAFA 0%, #DADADA 100%);
+	background-image: linear-gradient(to bottom, #FAFAFA 0%, #DADADA 100%);
+}
+
+.post-it-rotation-0 {
+}
+
+.post-it-rotation-1 {
+	-o-transform: rotate(-0.5deg);
+	-webkit-transform: rotate(-0.5deg);
+	-moz-transform: rotate(-0.5deg);
+}
+
+.post-it-rotation-2 {
+	-o-transform: rotate(0.5deg);
+	-webkit-transform: rotate(0.5deg);
+	-moz-transform: rotate(0.5deg);
+}
+
+.post-it-rotation-3 {
+	-o-transform: rotate(-1deg);
+	-webkit-transform: rotate(-1deg);
+	-moz-transform: rotate(-1deg);
+}
+
+.post-it-rotation-4 {
+	-o-transform: rotate(1deg);
+	-webkit-transform: rotate(1deg);
+	-moz-transform: rotate(1deg);
+}
+
+.post-it-small-rotation-0 {
+}
+
+.post-it-small-rotation-1 {
+	-o-transform: rotate(-0.1deg);
+	-webkit-transform: rotate(-0.1deg);
+	-moz-transform: rotate(-0.1deg);
+}
+
+.post-it-small-rotation-2 {
+	-o-transform: rotate(0.1deg);
+	-webkit-transform: rotate(0.1deg);
+	-moz-transform: rotate(0.1deg);
+}
+
+.post-it-small-rotation-3 {
+	-o-transform: rotate(-0.2deg);
+	-webkit-transform: rotate(-0.2deg);
+	-moz-transform: rotate(-0.2deg);
+}
+
+.post-it-small-rotation-4 {
+	-o-transform: rotate(0.2deg);
+	-webkit-transform: rotate(0.2deg);
+	-moz-transform: rotate(0.2deg);
+}
+
+.post-it-horizontal-move-cursor {
+	cursor: ew-resize;
+}
+
+.post-it-vertical-move-cursor {
+	cursor: ns-resize;
+}
+
+.post-it-legend {
+    font-style: italic;
+    font-size: 80%;
+}
+
+ul.pbis {
+	padding: 10px 0px 15px 0px;
+	width: 90%;
+	margin: 0px auto 0px auto;
+}
+
+ul.pbis li {
+	list-style: none;
+	padding: 3px 20px 3px 20px;
+	margin-bottom: 10px;
+}
+
+ul.pbis li table {
+	width: 100%;
+}
+
+ul.pbis li table tr {
+	vertical-align: middle;
+}
+
+ul.pbis li table tr td.header-1, ul.pbis li table tr td.header-2 {
+	font-size: 0.8em;
+	font-style: italic;
+	color: grey;
+	width: 50%;
+}
+
+ul.pbis li table tr td.header-1 {
+	text-align: left;
+}
+
+.pb-pbi-mini-post-its-container {
+	font-size: 1.4em;
+	color: black;
+}
+
+ul.pbis li table tr td.header-2 {
+	text-align: right;
+}
+
+ul.pbis li table tr td.story-points {
+    width: 6em;
+    min-width: 6em;
+    font-style: italic;
+    color: darkgrey;
+    white-space: nowrap;
+}
+
+ul.pbis li table tr td.story-points input {
+    font-size: 2em;
+    font-style: bold;
+    text-align: right;
+    min-width: 2em;
+}
+
+ul.pbis li table tr td.story-points-legend {
+	font-style: italic;
+	color: darkgrey;
+	min-width: 20px;
+}
+
+ul.pbis li table tr td.content {
+	width: 100%;
+	font-size: 1.2em;
+}
+
+table.sprint-board {
+	border-collapse: collapse;
+	overflow: auto;
+	width: 90%;
+	margin: 0px auto 10px auto;
+}
+
+table.sprint-board tr.sprint-board {
+	vertical-align: top;
+}
+
+table.sprint-board tr.sprint-board th.sprint-board,
+table.sprint-board tr.sprint-board td.sprint-board {
+    min-width: 13em;
+    padding-left: 0.8em;
+    padding-top: 0.8em;
+}
+
+table.sprint-board tr.sprint-board th.sprint-board {
+	border-bottom: 0.5em solid darkgrey;
+}
+
+table.sprint-board tr.sprint-board td.sprint-board {
+	border: 0.5em solid darkgrey;
+}
+
+.sprint-row-space {
+	border: 0.5em solid darkgrey;
+	height: 11em;
+	background-color: lightyellow;
+}
+
+table.sprint-pbi, table.sprint-task {
+	height: 9em;
+	margin-right: 0.8em;
+	margin-bottom: 0.8em;
+}
+
+table.sprint-pbi {
+	width: 16em;
+}
+
+table.sprint-task {
+	width: 13em;
+	float: left;
+}
+
+table.sprint-pbi tr, table.sprint-task tr {
+	vertical-align: top;
+}
+
+table.sprint-pbi tr td.content, table.sprint-task tr td.content,
+table.sprint-pbi tr td.content div.content, table.sprint-task tr td.content div.content {
+	height: 100%;
+	position: relative;
+}
+
+table.sprint-pbi, table.sprint-task {
+	padding-left: 0.3em;
+	padding-top: 0.1em;
+	padding-right: 0.3em;
+	padding-bottom: 0;
+}
+
+table.sprint-pbi tr td.content, table.sprint-task tr td.content,
+table.sprint-pbi tr td.content div.content, table.sprint-task tr td.content div.content,
+table.sprint-pbi tr td.estimation, table.sprint-task tr td.estimation,
+table.sprint-pbi tr td.spent, table.sprint-task tr td.spent,
+table.sprint-pbi tr td.pending, table.sprint-task tr td.pending {
+	padding: 0px;
+}
+
+table.sprint-pbi tr td.estimation, table.sprint-task tr td.estimation {
+}
+
+table.sprint-pbi tr td.spent, table.sprint-task tr td.spent {
+	text-align: center;
+}
+
+table.sprint-pbi tr td.pending, table.sprint-task tr td.pending {
+	text-align: right;
+}
+
+table.sprint-pbi input, table.sprint-task input {
+	text-align: right;
+	width: 2em;
+}
+
+.editable-time {
+	font-size: 1.1em;
+	padding: 0px;
+	background: transparent;
+	border: none;
+}
+
+.doers-reviewers-post-its-container {
+	position: absolute;
+	right: 0px;
+	bottom: 0px;
+	overflow: visible;
+	max-width: 9em;
+}
+
+.doer-post-it, .reviewer-post-it, .blocked-post-it {
+	height: 1.3em;
+	font-size: 0.8em;
+	margin: 3px 0px 0px 0px;
+	border-radius: 3px;
+	padding: 1px 3px 1px 3px;
+	text-align: left;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.doer-post-it {
+}
+
+.reviewer-post-it {
+}
+
+.blocked-post-it {
+}
+
+.post-it .gravatar {
+	border: 0;
+	padding: 0;
+}
+
+.scrum-custom-menu {
+	display: none;
+	z-index: 1000;
+	position: absolute;
+	background-color: lightgrey;
+	border: 1px solid grey;
+	padding: 15px 5px 5px 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.scrum-custom-menu .close-icon {
+	margin-top: -7px;
+	margin-right: -8px;
+}
+
+.scrum-custom-menu fieldset {
+	border: 1px solid white;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	color: white;
+	margin-top: 5px;
+}
+
+.scrum-custom-menu fieldset legend, .scrum-custom-menu label {
+	font-style: italic;
+	color: grey;
+}
+
+.scrum-custom-menu label {
+	float: left;
+}
+
+.scrum-custom-menu p {
+	margin-left: 100px;
+}
+
+.rotate {
+	-webkit-transform: rotate(-90deg);
+	-moz-transform: rotate(-90deg);
+	-ms-transform: rotate(-90deg);
+	-o-transform: rotate(-90deg);
+	filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+}
+
+.burndown {
+	width: 90%;
+	text-align: center;
+}
+
+.scrum-dialog {
+	display: none;
+}
+
+.graphic-tooltip {
+	position: absolute;
+	background: #EEE;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	-ms-border-radius: 3px;
+	-o-border-radius: 3px;
+	border-radius: 3px;
+	padding: 5px;
+	-webkit-box-shadow: 0 1px 3px #000;
+	-moz-box-shadow: 0 1px 3px #000;
+	-ms-box-shadow: 0 1px 3px #000;
+	-o-box-shadow: 0 1px 3px #000;
+	box-shadow: 0 1px 3px #000;
+	border-collapse: separate;
+	display: none;
+	z-index: 10;
+}
+
+.modal-issue-menu {
+	text-align: right;
+	margin-bottom: 0.5em;
+	font-size: 0.9em;
+}
+
+#licenseIframe {
+	width: 820px;
+	height: 580px;
+}
+
+table.scrum-stats-table {
+	width: 90%;
+	margin-left: 5%;
+	margin-right: 5%;
+	border-collapse: collapse;
+}
+
+table.scrum-stats-table tbody tr.double-row:nth-child(4n+0),
+table.scrum-stats-table tbody tr.double-row:nth-child(4n+3),
+table.scrum-stats-table thead tr.double-row {
+	background: #B8D1F3;
+}
+
+table.scrum-stats-table tbody tr.double-row:nth-child(4n+1),
+table.scrum-stats-table tbody tr.double-row:nth-child(4n+2) {
+	background: #DAE5F4;
+}
+
+table.scrum-stats-table tbody tr:nth-child(2n+0),
+table.scrum-stats-table thead tr {
+	background: #B8D1F3;
+}
+
+table.scrum-stats-table tbody tr:nth-child(2n+1) {
+	background: #DAE5F4;
+}
+
+table.scrum-stats-table tbody tr td.total {
+	font-weight: bold;
+}
+
+table.scrum-stats-table tbody tr td.comment {
+	font-style: italic;
+	font-color: grey;
+	font-size: 80%;
+}
+
+table.scrum-stats-chart-table {
+	width: 90%;
+	margin-left: 5%;
+	margin-right: 5%;
+	border-collapse: collapse;
+}
+
+.scrum-menu a {
+	margin-left: 1em;
+}
+
+.scrum-content {
+	position: relative;
+}
+
+.scrum-content-fullscreen {
+	background-color: white;
+	z-index: 50;
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	top: 0px;
+	right: 0px;
+	overflow: auto;
+}
+
+.scrum-contextual {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+}
+
+.scrum-content .icon-normal-screen {
+	display: none;
+}
+
+.scrum-content-fullscreen .icon-normal-screen {
+	display: inline;
+	margin-top: 5px;
+	margin-right: 10px;
+}
+
+.scrum-content .icon-fullscreen {
+	display: inline;
+	margin-top: -5px;
+}
+
+.scrum-content-fullscreen .icon-fullscreen {
+	display: none;
+}

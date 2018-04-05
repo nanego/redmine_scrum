@@ -1,0 +1,13 @@
+<h3 class="title"><%= @pbi.tracker.name %></h3>
+
+<div id="popup-messages"></div>
+
+<%= labelled_form_for @pbi, :url => create_pbi_path(@sprint), :remote => true do |f| %>
+  <%= back_url_hidden_field_tag %>
+  <%= f.hidden_field :tracker_id, :value => @pbi.tracker_id %>
+  <%= f.hidden_field :sprint_id, :value => @pbi.sprint_id %>
+  <%= hidden_field_tag(:top, true) if @top %>
+  <%= error_messages_for "pbi" %>
+  <%= render :partial => "scrum/new_issue_attributes", :formats => [:html],
+             :locals => {:f => f, :issue => @pbi} %>
+<% end %>

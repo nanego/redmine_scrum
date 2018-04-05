@@ -1,0 +1,45 @@
+<h2>Scrum plugin settings help</h2>
+
+<p>This plugin is highly configurable, usually default values are OK, but
+some of them must be configured before start using the plugin.</p>
+
+<h3>Mandatory/minimum steps</h3>
+
+<p>Usually configuring this plugin implies doing several steps in the admin
+section before start configuring the plugin itself:</p>
+<ol>
+  <li>Enable Scrum plugin permissions under <%= links[:permissions] %>.</li>
+  <li>Create trackers for PBIs. Usually one tracker for user stories, other
+  for bugs and another for technical debts. The less the better, so just enable
+  fields as: category, target version &amp; description.</li>
+  <li>Create a tracker for tasks, usually only one tracker is enough, but it's
+  OK if you create several. Again the less the better, so just enable fields:
+  assignee, parent issue, estimated time &amp; description.</li>
+  <li>Create issue custom field for story points: it must be a numeric value,
+  integer or float, but it's better if you use a list of values type with
+  a kind of Fibonacci values as: 0, 0.5, 1, 2, 3, 5, 8, 13, 20, 40, 100.</li>
+</ol>
+
+<h3>Configuring plugin settings</h3>
+
+<p>Almost all values are auto explanatory or include descriptions to understand
+them.</p>
+
+<p>Several values are multiple value selections, just press CTRL (or CMD on
+MacOS) to select several values.</p>
+
+<p>If you don't understand the purpose of something and you want to try it out,
+just change that single value and check what changed in the related view.</p>
+
+<p><a href="https://redmine.ociotec.com/projects/redmine-plugin-scrum/boards/11"
+target="_blank">Plugin support forum</a> it's also a good place to ask if you
+need it.</p>
+
+<h3>Optional steps</h3>
+
+<ol>
+  <li>Create an issue custom boolean value to set that a PBI/task is
+  blocked.</li>
+  <li>Create an issue custom boolean value to set that a PBI is
+  allowed to be in the Sprint board alone, that means without child tasks.</li>
+</ol>

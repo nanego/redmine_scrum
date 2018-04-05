@@ -1,0 +1,20 @@
+<%- if defined?(@project) and !(@project.nil?) and @project.scrum? %>
+  <%- issue_ids = @issues.collect{ |issue| issue.id } -%>
+  <li class="folder">
+    <a href="#" class="submenu"><%= l(:field_sprint) %></a>
+    <ul>
+      <li><%= context_menu_link l(:label_none),
+                                bulk_update_issues_path(:ids => issue_ids, :issue => {'sprint_id' => 'none'},
+                                                        :back_url => @back),
+                                :method => :post, :selected => (@issue && @issue.sprint.nil?),
+                                :disabled => !@can[:edit] %></li>
+      <%- @project.all_open_sprints_and_product_backlogs.sort.each do |sprint| -%>
+        <li><%= context_menu_link sprint.name,
+                                  bulk_update_issues_path(:ids => issue_ids, :issue => {:sprint_id => sprint},
+                                                          :back_url => @back),
+                                  :method => :post, :selected => (@issue && sprint == @issue.sprint),
+                                  :disabled => !@can[:edit] %></li>
+      <%- end -%>
+    </ul>
+  </li>
+<%- end -%>

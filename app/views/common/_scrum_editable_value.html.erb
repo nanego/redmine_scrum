@@ -1,0 +1,32 @@
+<input id="<%= element_id %>" type="text" class="editable-time" size="2" title="<%= title %>"
+       value="<%= number_with_precision(value, precision: 2,  strip_insignificant_zeros: true) %>"
+       <%= 'readonly' unless editable %>/>
+<%- if defined?(unit) -%>
+  <span <% if defined?(unit_title) %> title="<%= unit_title %>"<% end %>>
+    <%= unit %>
+  </span>
+<%- end -%>
+<%- if editable -%>
+  <%= javascript_tag do %>
+    $(document).ready(function() {
+      $("#<%= element_id %>").change(function() {
+        if ($.isFunction($.fn.setupAjaxIndicator)) {
+          setupAjaxIndicator();
+        }
+        $.ajax({
+          url: "<%= change_element_path %>",
+          type: "POST",
+          data: {value: $(this).val()},
+          error: function() {
+            alert("<%= l(:error_changing_value) %>");
+          },
+          complete: function() {
+            if ($.isFunction($.fn.hideOnLoad)) {
+              hideOnLoad();
+            }
+          }
+        });
+      });
+    });
+  <% end %>
+<%- end -%>

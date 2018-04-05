@@ -1,0 +1,49 @@
+<%= javascript_tag do %>
+  $(document).ready(function() {
+    var $assignees = $("#tasks-assignees");
+    var users = { };
+    $assignees.append("<option value='all'><%= l(:label_any) %></option>");
+    $("table.sprint-board a.user").each(function(row_index, user_link) {
+      users[$.trim(user_link.text)] = row_index;
+    });
+    $.each(users, function(user, row_index) {
+      $assignees.append("<option value='" + user + "'>" + user + "</option>");
+    });
+    $assignees.change(function(user){
+      var user = $assignees.val();
+      if (user === "all") {
+        $("table.sprint-board tbody.sprint-board tr.sprint-board").show();
+      } else {
+        $("table.sprint-board tbody.sprint-board tr.sprint-board").hide();
+        $("table.sprint-board a.user:contains('" + user + "')").parents("tr.sprint-board").show();
+      }
+    });
+
+    <%- if User.current.allowed_to?(:sort_sprint_board, sprint.project) -%>
+      $("#<%= sprint_board_id %>").sortable({
+        handle: ".sprint-pbi",
+        placeholder: "sprint-row-space",
+        update: function() {
+          if ($.isFunction($.fn.setupAjaxIndicator)) {
+            setupAjaxIndicator();
+          }
+          $.ajax({
+            url: "<%= sort_sprint_path(sprint) %>",
+            type: "POST",
+            data: $("#<%= sprint_board_id %>").sortable("serialize"),
+            dataType: "script",
+            error: function() {
+              alert("<%= l(:error_changing_pbi_order) %>");
+              location.reload(true);
+            },
+            complete: function() {
+              if ($.isFunction($.fn.hideOnLoad)) {
+                hideOnLoad();
+              }
+            }
+          });
+        }
+      });
+    <%- end -%>
+  });
+<% end %>

@@ -1,0 +1,37 @@
+<%= javascript_tag do %>
+	$(document).ready(function() {
+		$("#<%= pbi_status_id %>").droppable({
+			accept: ".sprint-task",
+			drop: function(event, ui) {
+				if ($.isFunction($.fn.setupAjaxIndicator)) {
+					setupAjaxIndicator();
+				}
+				if (!(ui.draggable.is($(this).children()))) {
+					$.ajax({
+						url: "<%= project_sprints_change_task_status_path(@project) %>",
+						type: "POST",
+						data: {task: encodeURIComponent($(ui.draggable).attr("id")),
+									 status: encodeURIComponent("<%= status.id %>")},
+						error: function() {
+							alert("<%= l(:error_changing_task_status) %>");
+							var task = $(ui.draggable);
+							task.detach();
+							task.appendTo($("#<%= "pbi_#{pbi_id}_status_" %>" + ui.draggable.attr("old-status")));
+						},
+						complete: function() {
+							if ($.isFunction($.fn.hideOnLoad)) {
+								hideOnLoad();
+							}
+						},
+						success: function() {
+							ui.draggable.attr("old-status", "<%= status.id %>");
+							window["container_" + $(ui.draggable).attr("id")] = "";
+						}
+					});
+				}
+				ui.draggable.appendTo($(this)).removeAttr("style");
+				ui.draggable.attr("style", "position: relative; " + ui.draggable.attr("style"));
+			}
+		});
+	});
+<% end %>
