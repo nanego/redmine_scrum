@@ -1,11 +1,12 @@
 <tr valign="top">
   <td width="300px">
     <div class="tabular">
+      <%- filtered_params = params.to_h.symbolize_keys.except(:controller, :action, :id) -%>
       <p>
         <label><%= l(:label_product_backlog) %>:</label>
         <%- options = product_backlog.project.product_backlogs.collect{ |other_product_backlog|
-              [other_product_backlog.name, path.call(other_product_backlog, params.symbolize_keys)] }
-            options = options_for_select(options, path.call(product_backlog, params.symbolize_keys)) -%>
+              [other_product_backlog.name, path.call(other_product_backlog, filtered_params)] }
+            options = options_for_select(options, path.call(product_backlog, filtered_params)) -%>
         <%= select_tag('selected_sprint_id', options,
                        :onchange => "if (this.value != '') { window.location = this.value; }") %>
       </p>

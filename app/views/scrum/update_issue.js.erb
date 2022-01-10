@@ -1,0 +1,28 @@
+<%- if defined?(@exception) -%>
+  <%- message = l(:error_updating_task, :message => @exception.message)
+      message_class = "error" -%>
+  $("#popup-messages").html("<div class=\"flash <%= message_class %>\"><%= message %></div>");
+<%- else -%>
+  if ($("#ajax-modal").length && $("#ajax-modal").hasClass("ui-dialog-content"))
+  {
+    $("#ajax-modal").dialog("close");
+  }
+  $("#<%= "pbi_#{@issue.parent_id}_row" %>").replaceWith("<%=
+    escape_javascript(render(:partial => 'post_its/sprint_board/pbi_row',
+                             :formats => [:html],
+                             :locals => {:project => (@issue.sprint.nil? ? @project : @issue.sprint.project),
+                                         :sprint_board_id => 'sprint_board',
+                                         :pbi => @issue.is_pbi? ? @issue : @issue.parent,
+                                         :task_statuses => IssueStatus.task_statuses})).html_safe
+  %>");
+  <%- # Scrum Board : do not throw an exception if new statut is not allowed -%>
+  <%- if @error_message -%>
+    alert('<%= @error_message %>');
+  <%- end -%>
+
+  <%- if @old_status != @issue.status -%>
+    var issue = $("#<%= "#{@issue.is_pbi? ? 'pbi' : 'task'}_#{@issue.id}" %>");
+    issue.detach();
+    issue.appendTo($("#<%= "pbi_#{@issue.is_pbi? ? @issue.id : @issue.parent_id}_status_#{@issue.status.id}" %>"));
+  <%- end -%>
+<%- end -%>

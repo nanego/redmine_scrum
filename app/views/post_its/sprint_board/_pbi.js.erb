@@ -1,5 +1,22 @@
 <%- if User.current.allowed_to?(:sort_sprint_board, project) and pbi.editable? -%>
   <%= javascript_tag do %>
-    draggableOnTouchScreen("<%= pbi_id %>");
+    draggableOnTouchScreen("pbi_<%= pbi.id %>_handle");
+  <% end %>
+<%- end -%>
+
+<%- if User.current.allowed_to?(:edit_sprint_board, project) and pbi.editable? and pbi.is_simple_pbi? -%>
+  <%= javascript_tag do %>
+    <%- other_pbi_status_ids.each do |pbi_status_id| -%>
+      $(document).ready(function() {
+          $("#<%= pbi_id %>").draggable({
+              revert: "invalid",
+              axis: "x",
+              containment: "<%= pbi_status_id %>",
+              cursor: "ew-resize",
+              stack: "table"
+          });
+          draggableOnTouchScreen("<%= pbi_id %>");
+      });
+    <%- end -%>
   <% end %>
 <%- end -%>

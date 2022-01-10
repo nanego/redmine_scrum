@@ -7,14 +7,6 @@
   <table>
     <tr>
       <td class="header-1">
-        <span class="pb-pbi-mini-post-its-container">
-          <%- if pbi.scrum_blocked? -%>
-            <span class="<%= Issue.blocked_post_it_css_class %>">
-              <%= l :label_blocked %>
-            </span>
-            &nbsp;&nbsp;
-          <%- end -%>
-        </span>
         <%= render_pbi_left_header(pbi) %>
       </td>
       <td class="header-2">
@@ -32,6 +24,9 @@
                      :locals => {:pbi => pbi, :read_only => read_only} %>
         </td>
       <%- end -%>
+      <td rowspan="2">
+        <%= render_issue_icons(pbi) %>
+      </td>
       <%- if User.current.allowed_to?(:edit_product_backlog, project) and
              User.current.allowed_to?(:edit_issues, pbi.project) and
              pbi.editable? and !read_only -%>

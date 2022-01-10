@@ -9,8 +9,8 @@
                         :include_blank => true %>
       </p>
     </div>
-    <%- if (@issue.is_task? or @issue.is_pbi?) and @issue.scrum? and
-        User.current.allowed_to?(:edit_pending_effort, @issue.project)-%>
+    <%- if (@issue.is_task? or (@issue.is_pbi? and Scrum::Setting.use_remaining_story_points?)) and
+           @issue.scrum? and User.current.allowed_to?(:edit_pending_effort, @issue.project)-%>
       <div class="splitcontentright">
         <p>
           <%= form.text_field :pending_effort, :size => 3,

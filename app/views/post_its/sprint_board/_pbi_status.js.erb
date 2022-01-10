@@ -1,14 +1,14 @@
 <%= javascript_tag do %>
 	$(document).ready(function() {
 		$("#<%= pbi_status_id %>").droppable({
-			accept: ".sprint-task",
+			accept: ".sprint-task,.sprint-pbi",
 			drop: function(event, ui) {
 				if ($.isFunction($.fn.setupAjaxIndicator)) {
 					setupAjaxIndicator();
 				}
 				if (!(ui.draggable.is($(this).children()))) {
 					$.ajax({
-						url: "<%= project_sprints_change_task_status_path(@project) %>",
+						url: "<%= project_sprints_change_issue_status_path(@project) %>",
 						type: "POST",
 						data: {task: encodeURIComponent($(ui.draggable).attr("id")),
 									 status: encodeURIComponent("<%= status.id %>")},

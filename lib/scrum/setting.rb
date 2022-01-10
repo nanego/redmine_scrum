@@ -1,8 +1,8 @@
 # Copyright © Emilio González Montaña
-# Licence: Attribution & no derivates
+# Licence: Attribution & no derivatives
 #   * Attribution to the plugin web page URL should be done if you want to use it.
 #     https://redmine.ociotec.com/projects/redmine-plugin-scrum
-#   * No derivates of this plugin (or partial) are allowed.
+#   * No derivatives of this plugin (or partial) are allowed.
 # Take a look to licence.txt file at plugin root folder for further details.
 
 module Scrum
@@ -23,10 +23,12 @@ module Scrum
        render_tasks_speed
        render_updated_on_pbi
        render_version_on_pbi
+       render_assigned_to_on_pbi
        show_project_totals_on_sprint
        show_project_totals_on_backlog
        sprint_burndown_day_zero
-       use_remaining_story_points).each do |setting|
+       use_remaining_story_points
+       default_sprint_shared).each do |setting|
       src = <<-END_SRC
       def self.#{setting}
         setting_or_default_boolean(:#{setting})
@@ -38,9 +40,9 @@ module Scrum
       class_eval src, __FILE__, __LINE__
     end
 
-    %w(blocked_color
-       doer_color
-       reviewer_color).each do |setting|
+    %w(doer_color
+       reviewer_color
+       default_sprint_name).each do |setting|
       src = <<-END_SRC
       def self.#{setting}
         setting_or_default(:#{setting})
@@ -65,7 +67,8 @@ module Scrum
     %w(blocked_custom_field_id
        closed_pbi_status_id
        simple_pbi_custom_field_id
-       story_points_custom_field_id).each do |setting|
+       story_points_custom_field_id
+       doer_reviewer_postit_user_field_id).each do |setting|
       src = <<-END_SRC
       def self.#{setting}
         ::Setting.plugin_scrum[:#{setting}.to_s]
@@ -119,6 +122,10 @@ module Scrum
 
     def self.high_speed
       setting_or_default_integer(:high_speed, :min => 101, :max => 10000)
+    end
+
+    def self.default_sprint_days
+      setting_or_default_integer(:default_sprint_days, :min => 1, :max => 20)
     end
 
   private

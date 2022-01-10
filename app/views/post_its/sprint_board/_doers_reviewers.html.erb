@@ -1,0 +1,6 @@
+<div class="doers-reviewers-post-its-container">
+  <%= render :partial => "post_its/sprint_board/mini_user_post_it", :formats => [:html],
+             :locals => {:users => issue.doers, :css_class => Issue.doer_post_it_css_class} %>
+  <%= render :partial => "post_its/sprint_board/mini_user_post_it", :formats => [:html],
+             :locals => {:users => issue.reviewers, :css_class => Issue.reviewer_post_it_css_class} %>
+</div>

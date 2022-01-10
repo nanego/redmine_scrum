@@ -1,3 +1,7 @@
+.icon-blocked {
+	background-image: url(../images/icon-blocked-16.png);
+}
+
 .icon-burndown {
 	background-image: url(../images/icon-burndown-16.png);
 }
@@ -54,12 +58,16 @@
 	background-image: url(../../../images/time_add.png);
 }
 
+.icon-vertical-drag-and-drop {
+	background-image: url(../../../images/reorder.png);
+}
+
 .float-icon {
 	float: right;
 	min-height: 16px;
 	padding-left: 16px;
 	padding-top: 0px;
-  padding-bottom: 0px;
+	padding-bottom: 0px;
 }
 
 .post-it, .post-it input {
@@ -75,6 +83,7 @@
 	-moz-transition: -moz-transform 0.15s linear;
 	-o-transition: -o-transform 0.15s linear;
 	-webkit-transition: -webkit-transform 0.15s linear;
+	border-radius: 6px;
 }
 
 .post-it-scale:hover, .post-it-scale:hover {
@@ -96,11 +105,11 @@
 }
 
 .settings-post-it {
-	margin-right: 20px;
+	margin-right: 15px;
 	white-space: nowrap;
 	padding: 2px;
 	padding-right: 9px;
-	border-radius: 9px;
+	border-radius: 4px;
 }
 
 .post-it-color-1 {
@@ -173,6 +182,24 @@
 	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FAFAFA), color-stop(1, #DADADA));
 	background-image: -webkit-linear-gradient(top, #FAFAFA 0%, #DADADA 100%);
 	background-image: linear-gradient(to bottom, #FAFAFA 0%, #DADADA 100%);
+}
+
+.post-it-color-9 {
+	background-image: -ms-linear-gradient(top, #B4FFB3 0%, #8CCD8B 100%);
+	background-image: -moz-linear-gradient(top, #B4FFB3 0%, #8CCD8B 100%);
+	background-image: -o-linear-gradient(top, #B4FFB3 0%, #8CCD8B 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #B4FFB3), color-stop(1, #8CCD8B));
+	background-image: -webkit-linear-gradient(top, #B4FFB3 0%, #8CCD8B 100%);
+	background-image: linear-gradient(to bottom, #B4FFB3 0%, #8CCD8B 100%);
+}
+
+.post-it-color-10 {
+	background-image: -ms-linear-gradient(top, #C8C6FF 0%, #9A98CB 100%);
+	background-image: -moz-linear-gradient(top, #C8C6FF 0%, #9A98CB 100%);
+	background-image: -o-linear-gradient(top, #C8C6FF 0%, #9A98CB 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #C8C6FF), color-stop(1, #9A98CB));
+	background-image: -webkit-linear-gradient(top, #C8C6FF 0%, #9A98CB 100%);
+	background-image: linear-gradient(to bottom, #C8C6FF 0%, #9A98CB 100%);
 }
 
 .post-it-rotation-0 {
@@ -381,19 +408,24 @@ table.sprint-pbi tr td.pending, table.sprint-task tr td.pending {
 }
 
 table.sprint-pbi tr td.estimation, table.sprint-task tr td.estimation {
+	vertical-align: middle;
 }
 
 table.sprint-pbi tr td.spent, table.sprint-task tr td.spent {
 	text-align: center;
+	vertical-align: middle;
 }
 
 table.sprint-pbi tr td.pending, table.sprint-task tr td.pending {
 	text-align: right;
+	vertical-align: middle;
 }
 
 table.sprint-pbi input, table.sprint-task input {
 	text-align: right;
+	vertical-align: middle;
 	width: 2em;
+	height: min-content;
 }
 
 .editable-time {
@@ -606,4 +638,11 @@ table.scrum-stats-chart-table {
 
 .scrum-content-fullscreen .icon-fullscreen {
 	display: none;
+}
+
+.sprint-board-pbi-handle {
+	background-image: url(../../../images/reorder.png);
+	background-repeat: no-repeat;
+	background-position: center;
+	min-width: 16px;
 }

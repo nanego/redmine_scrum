@@ -1,0 +1,79 @@
+api.sprint do
+  api.id(@sprint.id)
+  api.project(:id => @sprint.project_id, :name => @sprint.project.name) unless @sprint.project.nil?
+  api.name(@sprint.name)
+  api.description(@sprint.description)
+  api.sprint_start_date(@sprint.sprint_start_date)
+  api.sprint_end_date(@sprint.sprint_end_date)
+  api.status(@sprint.status)
+  api.shared(@sprint.shared)
+  api.array(:pbis, api_meta(:pbis_total_count => @sprint.pbis.size)) do
+    @sprint.pbis.each do |pbi|
+      api.pbi do
+        api.id(pbi.id)
+        api.subject(pbi.subject)
+        api.status(:id => pbi.status.id, :name => pbi.status.name) unless pbi.status.nil?
+        api.description(pbi.description)
+        api.tracker(:id => pbi.tracker.id, :name => pbi.tracker.name) unless pbi.tracker.nil?
+        api.category(:id => pbi.category.id, :name => pbi.category.name) unless pbi.category.nil?
+        api.fixed_version(:id => pbi.fixed_version.id, :name => pbi.fixed_version.name) unless pbi.fixed_version.nil?
+        api.is_simple_pbi(pbi.is_simple_pbi?)
+        api.blocked(pbi.scrum_blocked?) unless pbi.scrum_blocked?.nil?
+        api.scheduled(pbi.scheduled?)
+        api.story_points(pbi.story_points) unless pbi.story_points.nil?
+        api.remaining_story_points(pbi.remaining_story_points) unless pbi.remaining_story_points.nil?
+        api.closed_story_points(pbi.closed_story_points) unless pbi.closed_story_points.nil?
+        if User.current.allowed_to?(:view_pending_effort, pbi.project)
+          api.pending_effort(pbi.pending_effort_children) unless pbi.pending_effort_children.nil?
+        end
+        if User.current.allowed_to?(:view_time_entries, pbi.project)
+          api.total_time(pbi.total_time) unless pbi.total_time.nil?
+          api.speed(pbi.speed) unless pbi.speed.nil?
+        end
+        api.array(:tasks, api_meta(:tasks_total_count => pbi.children.size)) do
+          pbi.children.each do |task|
+            api.task do
+              api.id(task.id)
+              api.subject(task.subject)
+              api.status(:id => task.status.id, :name => task.status.name) unless task.status.nil?
+              api.description(task.description)
+              api.tracker(:id => task.tracker.id, :name => task.tracker.name) unless task.tracker.nil?
+              api.category(:id => task.category.id, :name => task.category.name) unless task.category.nil?
+              api.fixed_version(:id => task.fixed_version.id, :name => task.fixed_version.name) unless task.fixed_version.nil?
+              api.blocked(task.scrum_blocked?) unless task.scrum_blocked?.nil?
+              api.scheduled(task.scheduled?)
+              api.estimated_hours(task.estimated_hours) unless task.estimated_hours.nil?
+              if User.current.allowed_to?(:view_pending_effort, pbi.project)
+                api.pending_effort(task.pending_effort) unless task.pending_effort.nil?
+              end
+              if User.current.allowed_to?(:view_time_entries, task.project)
+                api.logged_time(task.total_time) unless task.total_time.nil?
+                api.speed(task.speed) unless task.speed.nil?
+              end
+              api.array(:doers, api_meta(:doers_total_count => task.doers.size)) do
+                task.doers.each do |user|
+                  api.user do
+                    api.id(user.id)
+                    api.login(user.login)
+                    api.firstname(user.firstname)
+                    api.lastname(user.lastname)
+                  end
+                end
+              end
+              api.array(:reviewers, api_meta(:reviewers_total_count => task.reviewers.size)) do
+                task.reviewers.each do |user|
+                  api.user do
+                    api.id(user.id)
+                    api.login(user.login)
+                    api.firstname(user.firstname)
+                    api.lastname(user.lastname)
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+end

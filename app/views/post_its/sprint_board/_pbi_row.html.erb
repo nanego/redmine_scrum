@@ -1,6 +1,10 @@
 <%- pbi_row_id = "pbi_#{pbi.id}_row" -%>
 <%- is_simple = pbi.is_simple_pbi? -%>
-<tr class="sprint-board" id="<%= pbi_row_id %>">
+<tr class="sprint-board"
+    id="<%= pbi_row_id %>">
+  <td class="<%= pbi.sortable? ? 'sprint-board-pbi-handle post-it-vertical-move-cursor' : '' %>"
+      id="pbi_<%= pbi.id %>_handle">
+  </td>
   <td class="sprint-board">
     <%- unless is_simple -%>
       <%= render :partial => 'post_its/sprint_board/pbi', :formats => [:html],
@@ -21,6 +25,8 @@
           <%= render :partial => 'post_its/sprint_board/pbi', :formats => [:html],
                      :locals => {:project => project,
                                  :pbi => pbi,
+                                 :pbi_status_id => pbi_status_id,
+                                 :other_pbi_status_ids => other_pbi_status_ids,
                                  :read_only => false} %>
         <%- end -%>
       <%- else -%>

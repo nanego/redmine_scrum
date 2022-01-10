@@ -1,8 +1,8 @@
 # Copyright © Emilio González Montaña
-# Licence: Attribution & no derivates
+# Licence: Attribution & no derivatives
 #   * Attribution to the plugin web page URL should be done if you want to use it.
 #     https://redmine.ociotec.com/projects/redmine-plugin-scrum
-#   * No derivates of this plugin (or partial) are allowed.
+#   * No derivatives of this plugin (or partial) are allowed.
 # Take a look to licence.txt file at plugin root folder for further details.
 
 require_dependency 'application_helper'
@@ -55,7 +55,8 @@ module Scrum
           return link_to(label, release_plan_product_backlog_path(sprint))
         end
 
-        def parse_redmine_links_with_scrum(text, default_project, obj, attr, only_path, options)
+        alias_method :parse_redmine_links_without_scrum, :parse_redmine_links
+        def parse_redmine_links(text, default_project, obj, attr, only_path, options)
           result = parse_redmine_links_without_scrum(text, default_project, obj, attr, only_path, options)
           text.gsub!(%r{([\s\(,\-\[\>]|^)(!)?(([a-z0-9\-_]+):)?(sprint|burndown|stats|product\-backlog|release\-plan)?((#)((\d*)|(current|latest)))(?=(?=[[:punct:]][^A-Za-z0-9_/])|,|\s|\]|<|$)}) do |m|
             leading, project_identifier, element_type, separator, element_id_text = $1, $4, $5, $7, $8
@@ -92,11 +93,11 @@ module Scrum
           end
           return result
         end
-        alias_method_chain :parse_redmine_links, :scrum
 
         def scrum_tips
           tips = []
           if Scrum::Setting.render_plugin_tips
+            back_url = url_for(params.permit!)
             # Plugin permissions check.
             unless @project and !(@project.module_enabled?(:scrum))
               scrum_permissions = Redmine::AccessControl.modules_permissions(['scrum']).select{|p| p.project_module}.collect{|p| p.name}
@@ -138,13 +139,13 @@ module Scrum
                 tips << l(:label_tip_no_product_backlogs,
                           :link => link_to(l(:label_tip_new_product_backlog_link),
                                            new_project_sprint_path(@project, :create_product_backlog => true,
-                                                                   :back_url => url_for(params))))
+                                                                   :back_url => back_url)))
               end
               # At least one Sprint check.
               if @project.sprints.empty?
                 tips << l(:label_tip_no_sprints,
                           :link => link_to(l(:label_tip_new_sprint_link),
-                                           new_project_sprint_path(@project, :back_url => url_for(params))))
+                                           new_project_sprint_path(@project, :back_url => back_url)))
               end
               # Product backlog (+release plan) checks.
               if @product_backlog and @product_backlog.persisted?
@@ -158,7 +159,7 @@ module Scrum
                   if @project.versions.empty?
                     tips << l(:label_tip_project_without_versions,
                               :link => link_to(l(:label_tip_new_version_link),
-                                               new_project_version_path(@project, :back_url => url_for(params))))
+                                               new_project_version_path(@project, :back_url => back_url)))
                   end
                 end
               end
@@ -166,13 +167,22 @@ module Scrum
               if @sprint and @sprint.persisted? and !(@sprint.is_product_backlog?)
                 sprint_board_link = link_to(l(:label_tip_sprint_board_link),
                                             sprint_path(@sprint))
+                there_are_simple_pbis = false
+                there_are_only_simple_pbis = true
+                @sprint.pbis.each do |pbi|
+                  if pbi.is_simple_pbi?
+                    there_are_simple_pbis = true
+                  else
+                    there_are_only_simple_pbis = false
+                  end
+                end
                 # No PBIs check.
                 if @sprint.pbis.empty?
                   tips << l(:label_tip_sprint_without_pbis, :sprint_board_link => sprint_board_link,
                             :product_backlog_link => product_backlog_link)
                 end
                 # No tasks check.
-                if @sprint.tasks.empty?
+                if @sprint.tasks.empty? and not there_are_simple_pbis
                   tips << l(:label_tip_sprint_without_tasks, :link => sprint_board_link)
                 end
                 # Orphan tasks check.
@@ -183,10 +193,10 @@ module Scrum
                   tips << l(:label_tip_sprint_with_orphan_tasks, :link => issues_link)
                 end
                 # No estimated effort check.
-                if @sprint.efforts.empty?
+                if @sprint.efforts.empty? and not there_are_only_simple_pbis
                   tips << l(:label_tip_sprint_without_efforts,
                             :link => link_to(l(:label_tip_sprint_effort_link),
-                                             edit_effort_sprint_path(@sprint, :back_url => url_for(params))))
+                                             edit_effort_sprint_path(@sprint, :back_url => back_url)))
                 end
                 # No project members on edit Sprint effort view.
                 if @project.members.empty? and params[:action].to_s == 'edit_effort'
@@ -286,7 +296,7 @@ module Scrum
                                           permissions_roles_path)
             links[:sprint_effort] = link_to(l(:label_tip_sprint_effort_link),
                                             edit_effort_sprint_path(@sprint,
-                                                                    :back_url => url_for(params))) if @sprint and not @sprint.new_record?
+                                                                    :back_url => url_for(params.permit!))) if @sprint and not @sprint.new_record?
           end
           return template.nil? ? '' : render(:partial => 'help/help',
                                              :formats => [:html],

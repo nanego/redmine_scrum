@@ -1,8 +1,8 @@
 # Copyright © Emilio González Montaña
-# Licence: Attribution & no derivates
+# Licence: Attribution & no derivatives
 #   * Attribution to the plugin web page URL should be done if you want to use it.
 #     https://redmine.ociotec.com/projects/redmine-plugin-scrum
-#   * No derivates of this plugin (or partial) are allowed.
+#   * No derivatives of this plugin (or partial) are allowed.
 # Take a look to licence.txt file at plugin root folder for further details.
 
 class ScrumController < ApplicationController
@@ -10,35 +10,35 @@ class ScrumController < ApplicationController
   menu_item :product_backlog, :except => [:stats]
   menu_item :overview, :only => [:stats]
 
-  before_filter :find_issue,
+  before_action :find_issue,
                 :only => [:change_story_points, :change_remaining_story_points,
                           :change_pending_effort,
                           :change_assigned_to, :new_time_entry,
                           :create_time_entry, :edit_task, :update_task,
                           :change_pending_efforts]
-  before_filter :find_sprint,
+  before_action :find_sprint,
                 :only => [:new_pbi, :create_pbi,
                           :move_not_closed_pbis_to_last_sprint]
-  before_filter :find_pbi,
+  before_action :find_pbi,
                 :only => [:new_task, :create_task, :edit_pbi, :update_pbi,
                           :move_pbi, :move_to_last_sprint,
                           :move_to_product_backlog]
-  before_filter :find_project_by_project_id,
+  before_action :find_project_by_project_id,
                 :only => [:stats]
 
-  before_filter :authorize,
+  before_action :authorize,
                 :except => [:new_pbi, :create_pbi, :new_task, :create_task,
                             :move_to_last_sprint,
                             :move_not_closed_pbis_to_last_sprint,
                             :move_to_product_backlog,
                             :new_time_entry, :create_time_entry]
-  before_filter :authorize_add_issues,
+  before_action :authorize_add_issues,
                 :only => [:new_pbi, :create_pbi, :new_task, :create_task]
-  before_filter :authorize_edit_issues,
+  before_action :authorize_edit_issues,
                 :only => [:move_to_last_sprint,
                           :move_not_closed_pbis_to_last_sprint,
                           :move_to_product_backlog]
-  before_filter :authorize_log_time,
+  before_action :authorize_log_time,
                 :only => [:new_time_entry, :create_time_entry]
 
   helper :custom_fields
@@ -53,17 +53,17 @@ class ScrumController < ApplicationController
     rescue
       status = 503
     end
-    render :nothing => true, :status => status
+    render :body => nil, :status => status
   end
 
   def change_remaining_story_points
     @issue.remaining_story_points = params[:value]
-    render :nothing => true, :status => status
+    render :body => nil, :status => status
   end
 
   def change_pending_effort
     @issue.pending_effort = params[:value]
-    render :nothing => true, :status => 200
+    render :body => nil, :status => 200
   end
 
   def change_pending_efforts
@@ -91,7 +91,7 @@ class ScrumController < ApplicationController
   def new_time_entry
     @pbi_status_id = params[:pbi_status_id]
     @other_pbi_status_ids = params[:other_pbi_status_ids]
-    @task_id = params[:task_id]
+    @issue_id = params[:issue_id]
     respond_to do |format|
       format.js
     end
@@ -99,7 +99,7 @@ class ScrumController < ApplicationController
 
   def create_time_entry
     begin
-      time_entry = TimeEntry.new(params[:time_entry])
+      time_entry = TimeEntry.new(params.require(:time_entry).permit(:hours, :spent_on, :comments, :activity_id, :user_id))
       time_entry.project_id = @project.id
       time_entry.issue_id = @issue.id
       time_entry.user_id = params[:time_entry][:user_id]
@@ -301,7 +301,9 @@ class ScrumController < ApplicationController
       logger.error("Exception: #{@exception.inspect}")
     end
     respond_to do |format|
-      format.js
+      format.js do
+        render "scrum/update_issue"
+      end
     end
   end
 

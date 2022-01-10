@@ -1,8 +1,8 @@
 # Copyright © Emilio González Montaña
-# Licence: Attribution & no derivates
+# Licence: Attribution & no derivatives
 #   * Attribution to the plugin web page URL should be done if you want to use it.
 #     https://redmine.ociotec.com/projects/redmine-plugin-scrum
-#   * No derivates of this plugin (or partial) are allowed.
+#   * No derivatives of this plugin (or partial) are allowed.
 # Take a look to licence.txt file at plugin root folder for further details.
 
 require_dependency "issues_controller"
@@ -12,8 +12,8 @@ module Scrum
     def self.included(base)
       base.class_eval do
 
-        after_filter :save_pending_effort, :only => [:create, :update]
-        before_filter :add_default_sprint, :only => [:new, :update_form]
+        after_action :save_pending_effort, :only => [:create, :update]
+        before_action :add_default_sprint, :only => [:new, :update_form]
 
       private
 

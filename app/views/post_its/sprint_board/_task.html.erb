@@ -18,7 +18,7 @@
                         new_scrum_time_entry_path(task,
                                                   :pbi_status_id => pbi_status_id,
                                                   :other_pbi_status_ids => other_pbi_status_ids.join(','),
-                                                  :task_id => task_id),
+                                                  :issue_id => task_id),
                         :remote => true, :method => 'GET',
                         :class => 'icon icon-log-time float-icon',
                         :title => l(:button_log_time)) %>
@@ -32,23 +32,8 @@
         </div>
         <%= render(:partial => 'post_its/sprint_board/custom_fields', :formats => [:html],
                    :locals => {:project => project, :issue => task}) %>
-        <div class="doers-reviewers-post-its-container">
-          <%- task.doers.each do |doer| -%>
-            <div class="<%= Issue.doer_post_it_css_class %>">
-              <%= avatar(doer, :size => '14') %> <%= link_to_user doer %>
-            </div>
-          <%- end -%>
-          <%- task.reviewers.each do |reviewer| -%>
-            <div class="<%= Issue.reviewer_post_it_css_class %>">
-              <%= avatar(reviewer, :size => '14') %> <%= link_to_user reviewer %>
-            </div>
-          <%- end -%>
-          <%- if task.scrum_blocked? -%>
-            <div class="<%= Issue.blocked_post_it_css_class %>">
-              <%= l :label_blocked %>
-            </div>
-          <%- end -%>
-        </div>
+        <%= render :partial => "post_its/sprint_board/doers_reviewers", :formats => [:html],
+                   :locals => {:issue => task} %>
       </div>
     </td>
   </tr>

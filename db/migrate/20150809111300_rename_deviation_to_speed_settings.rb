@@ -1,11 +1,11 @@
 # Copyright © Emilio González Montaña
-# Licence: Attribution & no derivates
+# Licence: Attribution & no derivatives
 #   * Attribution to the plugin web page URL should be done if you want to use it.
 #     https://redmine.ociotec.com/projects/redmine-plugin-scrum
-#   * No derivates of this plugin (or partial) are allowed.
+#   * No derivatives of this plugin (or partial) are allowed.
 # Take a look to licence.txt file at plugin root folder for further details.
 
-class RenameDeviationToSpeedSettings < ActiveRecord::Migration
+class RenameDeviationToSpeedSettings < ActiveRecord::Migration[4.2]
   def self.up
     change_speed_settings render_pbis_deviations: :render_pbis_speed,
                           render_tasks_deviations: :render_tasks_speed,

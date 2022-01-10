@@ -1,8 +1,8 @@
 # Copyright © Emilio González Montaña
-# Licence: Attribution & no derivates
+# Licence: Attribution & no derivatives
 #   * Attribution to the plugin web page URL should be done if you want to use it.
 #     https://redmine.ociotec.com/projects/redmine-plugin-scrum
-#   * No derivates of this plugin (or partial) are allowed.
+#   * No derivatives of this plugin (or partial) are allowed.
 # Take a look to licence.txt file at plugin root folder for further details.
 
 class SprintsController < ApplicationController
@@ -10,32 +10,41 @@ class SprintsController < ApplicationController
   menu_item :sprint
   model_object Sprint
 
-  before_filter :find_model_object,
+  before_action :find_model_object,
                 :only => [:show, :edit, :update, :destroy, :edit_effort, :update_effort, :burndown,
                           :stats, :sort]
-  before_filter :find_project_from_association,
+  before_action :find_project_from_association,
                 :only => [:show, :edit, :update, :destroy, :edit_effort, :update_effort, :burndown,
                           :stats, :sort]
-  before_filter :find_project_by_project_id,
-                :only => [:index, :new, :create, :change_task_status, :burndown_index,
+  before_action :find_project_by_project_id,
+                :only => [:index, :new, :create, :change_issue_status, :burndown_index,
                           :stats_index]
-  before_filter :find_pbis, :only => [:sort]
-  before_filter :find_subprojects,
+  before_action :find_pbis, :only => [:sort]
+  before_action :find_subprojects,
                 :only => [:burndown]
-  before_filter :filter_by_project,
+  before_action :filter_by_project,
                 :only => [:burndown]
-  before_filter :calculate_stats, :only => [:show, :burndown, :stats]
-  before_filter :authorize
+  before_action :calculate_stats, :only => [:show, :burndown, :stats]
+  before_action :authorize
+
+  accept_api_auth :index, :show
 
   helper :custom_fields
   helper :scrum
   helper :timelog
 
+  include Redmine::Utils::DateCalculation
+
   def index
-    if (current_sprint = @project.current_sprint)
-      redirect_to sprint_path(current_sprint)
-    else
-      render_error l(:error_no_sprints)
+    respond_to do |format|
+      format.html {
+        if (current_sprint = @project.current_sprint)
+          redirect_to sprint_path(current_sprint)
+        else
+          render_error l(:error_no_sprints)
+        end
+      }
+      format.api
     end
   rescue
     render_404
@@ -43,6 +52,10 @@ class SprintsController < ApplicationController
 
   def show
     redirect_to project_product_backlog_index_path(@project) if @sprint.is_product_backlog?
+    respond_to do |format|
+      format.html
+      format.api
+    end
   end
 
   def new
@@ -50,21 +63,34 @@ class SprintsController < ApplicationController
     if @sprint.is_product_backlog
       @sprint.name = l(:label_product_backlog)
       @sprint.sprint_start_date = @sprint.sprint_end_date = Date.today
+    elsif @project.sprints.empty?
+      @sprint.name = Scrum::Setting.default_sprint_name
+      @sprint.sprint_start_date = Date.today
+      @sprint.sprint_end_date = add_working_days(@sprint.sprint_start_date, Scrum::Setting.default_sprint_days - 1)
+      @sprint.shared = Scrum::Setting.default_sprint_shared
+    else
+      last_sprint = @project.sprints.last
+      result = last_sprint.name.match(/^(.*)(\d+)(.*)$/)
+      @sprint.name = result.nil? ? Scrum::Setting.default_sprint_name : (result[1] + (result[2].to_i + 1).to_s + result[3])
+      @sprint.description = last_sprint.description
+      @sprint.sprint_start_date = next_working_date(last_sprint.sprint_end_date + 1)
+      last_sprint_duration = last_sprint.sprint_end_date - last_sprint.sprint_start_date
+      @sprint.sprint_end_date = next_working_date(@sprint.sprint_start_date + last_sprint_duration)
+      @sprint.shared = last_sprint.shared
     end
   end
 
   def create
-    @sprint = Sprint.new(:user => User.current,
-                         :project => @project,
-                         :is_product_backlog => (!(params[:create_product_backlog].nil?)))
+    is_product_backlog = !(params[:create_product_backlog].nil?)
+    @sprint = Sprint.new(:user => User.current, :project => @project, :is_product_backlog => is_product_backlog)
     @sprint.safe_attributes = params[:sprint]
     if request.post? and @sprint.save
-      if params[:create_product_backlog]
+      if is_product_backlog
         @project.product_backlogs << @sprint
         raise 'Fail to update project with product backlog' unless @project.save!
       end
       flash[:notice] = l(:notice_successful_create)
-      redirect_back_or_default settings_project_path(@project, :tab => 'sprints')
+      redirect_back_or_default settings_project_path(@project, :tab => is_product_backlog ? 'product_backlogs' : 'sprints')
     else
       render :action => :new
     end
@@ -98,15 +124,30 @@ class SprintsController < ApplicationController
     redirect_to settings_project_path(@project, :tab => 'sprints')
   end
 
-  def change_task_status
-    @issue = Issue.find(params[:task].match(/^task_(\d+)$/)[1].to_i)
+  def change_issue_status
+    result = params[:task].match(/^(task|pbi)_(\d+)$/)
+    issue_id = result[2].to_i
+    @issue = Issue.find(issue_id)
     @old_status = @issue.status
-    @issue.init_journal(User.current)
-    @issue.status = IssueStatus.find(params[:status].to_i)
-    raise 'New status is not allowed' unless @issue.new_statuses_allowed_to.include?(@issue.status)
-    @issue.save!
+
+    # Do not change issue status if not necessary
+    new_status = IssueStatus.find(params[:status].to_i)
+
+    # Manage case where new status is allowed
+    if new_status && @issue.new_statuses_allowed_to.include?(new_status)
+      @issue.init_journal(User.current)
+      @issue.status = new_status
+      @issue.save!
+    else
+      # Exception replaced by an instance variable
+      # Create error message if new status not allowed
+      @error_message = l(:error_new_status_no_allowed,
+                         :status_from => @old_status,
+                         :status_to => new_status)
+    end
+
     respond_to do |format|
-      format.js { render 'scrum/update_task' }
+      format.js { render 'scrum/update_issue' }
     end
   end
 
@@ -235,22 +276,7 @@ class SprintsController < ApplicationController
             @estimated_efforts_totals[:total] += sprint_effort.effort
           end
         end
-        @project.time_entries.where(done_effort_conditions).each do |time_entry|
-          if time_entry.hours
-            init_members_efforts(@members_efforts,
-                                 time_entry.user)
-            member_done_efforts_days = init_member_efforts_days(@members_efforts,
-                                                                @sprint,
-                                                                time_entry.user,
-                                                                date,
-                                                                false)
-            member_done_efforts_days[date] += time_entry.hours
-            @members_efforts[time_entry.user.id][:done_efforts][:total] += time_entry.hours
-            @done_efforts_totals[:days][date] = 0.0 unless @done_efforts_totals[:days].include?(date)
-            @done_efforts_totals[:days][date] += time_entry.hours
-            @done_efforts_totals[:total] += time_entry.hours
-          end
-        end
+        project_efforts_for_stats(@project, @sprint, date, done_effort_conditions, @members_efforts, @done_efforts_totals)
       end
     end
     @members_efforts = @members_efforts.values.sort{|a, b| a[:member] <=> b[:member]}
@@ -281,7 +307,7 @@ class SprintsController < ApplicationController
         pbi.save!
       end
     end
-    render :nothing => true
+    render :body => nil
   end
 
 private
@@ -308,6 +334,29 @@ private
       member_efforts_days[date] = 0.0
     end
     return member_efforts_days
+  end
+
+  def project_efforts_for_stats(project, sprint, date, done_effort_conditions, members_efforts, done_efforts_totals)
+    project.time_entries.where(done_effort_conditions).each do |time_entry|
+      if time_entry.hours
+        init_members_efforts(members_efforts, time_entry.user)
+        member_done_efforts_days = init_member_efforts_days(members_efforts,
+                                                            sprint,
+                                                            time_entry.user,
+                                                            date,
+                                                            false)
+        member_done_efforts_days[date] += time_entry.hours
+        members_efforts[time_entry.user.id][:done_efforts][:total] += time_entry.hours
+        done_efforts_totals[:days][date] = 0.0 unless done_efforts_totals[:days].include?(date)
+        done_efforts_totals[:days][date] += time_entry.hours
+        done_efforts_totals[:total] += time_entry.hours
+      end
+    end
+    if sprint.shared
+      project.children.visible.each do |sub_project|
+        project_efforts_for_stats(sub_project, sprint, date, done_effort_conditions, members_efforts, done_efforts_totals)
+      end
+    end
   end
 
   def find_pbis

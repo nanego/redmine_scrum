@@ -1,8 +1,8 @@
 # Copyright © Emilio González Montaña
-# Licence: Attribution & no derivates
+# Licence: Attribution & no derivatives
 #   * Attribution to the plugin web page URL should be done if you want to use it.
 #     https://redmine.ociotec.com/projects/redmine-plugin-scrum
-#   * No derivates of this plugin (or partial) are allowed.
+#   * No derivatives of this plugin (or partial) are allowed.
 # Take a look to licence.txt file at plugin root folder for further details.
 
 class ProductBacklogController < ApplicationController
@@ -10,22 +10,21 @@ class ProductBacklogController < ApplicationController
   menu_item :product_backlog
   model_object Sprint
 
-  before_filter :find_model_object,
+  before_action :find_model_object,
                 :only => [:show, :edit, :update, :destroy, :edit_effort, :update_effort, :burndown,
-                          :release_plan, :stats, :sort]
-  before_filter :find_project_from_association,
+                          :release_plan, :stats, :sort, :check_dependencies]
+  before_action :find_project_from_association,
                 :only => [:show, :edit, :update, :destroy, :edit_effort, :update_effort, :burndown,
-                          :release_plan, :stats, :sort]
-  before_filter :find_project_by_project_id,
-                :only => [:index, :new, :create, :change_task_status, :burndown_index,
-                          :stats_index]
-  before_filter :find_subprojects,
+                          :release_plan, :stats, :sort, :check_dependencies]
+  before_action :find_project_by_project_id,
+                :only => [:index, :new, :create]
+  before_action :find_subprojects,
                 :only => [:show, :burndown, :release_plan]
-  before_filter :filter_by_project,
+  before_action :filter_by_project,
                 :only => [:show, :burndown, :release_plan]
-  before_filter :check_issue_positions, :only => [:show]
-  before_filter :calculate_stats, :only => [:show, :burndown, :release_plan]
-  before_filter :authorize
+  before_action :check_issue_positions, :only => [:show]
+  before_action :calculate_stats, :only => [:show, :burndown, :release_plan]
+  before_action :authorize
 
   helper :scrum
 
@@ -46,13 +45,26 @@ class ProductBacklogController < ApplicationController
   end
 
   def sort
-    @product_backlog.pbis.each do |pbi|
+    # First, detect dependent issues.
+    error_messages = []
+    the_pbis = @product_backlog.pbis
+    the_pbis.each do |pbi|
       pbi.init_journal(User.current)
       pbi.position = params['pbi'].index(pbi.id.to_s) + 1
-      pbi.check_bad_dependencies
-      pbi.save!
+      message = pbi.check_bad_dependencies(false)
+      error_messages << message unless message.nil?
     end
-    render :nothing => true
+
+    if error_messages.empty?
+      # No dependency issue, we can sort.
+      the_pbis.each do |pbi|
+        pbi.save!
+      end
+    end
+
+    respond_to do |format|
+      format.json {render :json => error_messages.to_json}
+    end
   end
 
   def check_dependencies

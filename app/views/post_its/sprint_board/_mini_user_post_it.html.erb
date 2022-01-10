@@ -1,0 +1,11 @@
+<%- users.each do |user| -%>
+  <div class="<%= css_class %>">
+
+    <%= avatar(user, :size => '14') %>
+    <%- if user.has_alias? -%>
+      <%= link_to(user.alias, user_url(user), :class => user.css_classes) %>
+    <%- else -%>
+      <%= link_to_user(user) %>
+    <%- end -%>
+  </div>
+<%- end -%>

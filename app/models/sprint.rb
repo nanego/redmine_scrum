@@ -1,8 +1,8 @@
 # Copyright © Emilio González Montaña
-# Licence: Attribution & no derivates
+# Licence: Attribution & no derivatives
 #   * Attribution to the plugin web page URL should be done if you want to use it.
 #     https://redmine.ociotec.com/projects/redmine-plugin-scrum
-#   * No derivates of this plugin (or partial) are allowed.
+#   * No derivatives of this plugin (or partial) are allowed.
 # Take a look to licence.txt file at plugin root folder for further details.
 
 class Sprint < ActiveRecord::Base
@@ -16,7 +16,6 @@ class Sprint < ActiveRecord::Base
 
   include Redmine::SafeAttributes
   safe_attributes :name, :description, :sprint_start_date, :sprint_end_date, :status, :shared
-  attr_protected :id
 
   SPRINT_STATUSES = %w(open closed)
 

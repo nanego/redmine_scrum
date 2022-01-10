@@ -6,6 +6,14 @@
     $("table.sprint-board a.user").each(function(row_index, user_link) {
       users[$.trim(user_link.text)] = row_index;
     });
+
+    <% # put "Me" in first in the list %>
+    var current_user_name = '<%= User.current.name %>';
+    if (current_user_name in users) {
+      var label_me = '<< <%= l(:label_me) %> >>';
+      $assignees.append("<option value='" + current_user_name + "'>" + label_me + "</option>");
+    }
+
     $.each(users, function(user, row_index) {
       $assignees.append("<option value='" + user + "'>" + user + "</option>");
     });
@@ -21,7 +29,7 @@
 
     <%- if User.current.allowed_to?(:sort_sprint_board, sprint.project) -%>
       $("#<%= sprint_board_id %>").sortable({
-        handle: ".sprint-pbi",
+        handle: ".sprint-board-pbi-handle",
         placeholder: "sprint-row-space",
         update: function() {
           if ($.isFunction($.fn.setupAjaxIndicator)) {

@@ -1,0 +1,16 @@
+api.array :sprints, api_meta(:total_count => @project.sprints.size) do
+  @project.sprints.each do |sprint|
+    api.sprint do
+      api.id(sprint.id)
+      api.project(:id => sprint.project_id, :name => sprint.project.name) unless sprint.project.nil?
+      api.name(sprint.name)
+      api.description(sprint.description)
+      api.sprint_start_date(sprint.sprint_start_date)
+      api.sprint_end_date(sprint.sprint_end_date)
+      api.status(sprint.status)
+      api.shared(sprint.shared)
+      api.pbis(sprint.pbis.size)
+      api.tasks(sprint.tasks.size)
+    end
+  end
+end

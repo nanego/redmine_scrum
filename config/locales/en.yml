@@ -1,10 +1,10 @@
 # encoding: UTF-8
 
 # Copyright © Emilio González Montaña
-# Licence: Attribution & no derivates
+# Licence: Attribution & no derivatives
 #   * Attribution to the plugin web page URL should be done if you want to use it.
 #     https://redmine.ociotec.com/projects/redmine-plugin-scrum
-#   * No derivates of this plugin (or partial) are allowed.
+#   * No derivatives of this plugin (or partial) are allowed.
 # Take a look to licence.txt file at plugin root folder for further details.
 
 en:
@@ -15,8 +15,10 @@ en:
   error_creating_pbi: "Fail to create a product backlog item (%{message})."
   error_creating_task: "Fail to create a task (%{message})."
   error_creating_time_entry: "Fail to create a time entry (%{message})."
+  error_new_status_no_allowed: "It is not allowed to go from status ’%{status_from}’ to status ’%{status_to}’"
   error_no_product_backlog: "There is none product backlog yet, please ask this project administrator to create it in settings tab."
   error_no_sprints: "There are none Sprints defined yet, please ask this project administrator to create them in settings tab."
+  error_sorting_other_issues_depends_on_issue: "Other issues (%{others}) depend on #%{id}, it cannot be sorted."
   error_updating_pbi: "Error updating the PBI (%{message})"
   error_updating_task: "Error updating the task (%{message})"
   field_end_date: "End date"
@@ -26,8 +28,8 @@ en:
   field_shared_note: "A shared Sprint is visible in child projects, so you will be able to assign child projects issues to this Sprint."
   field_sprint: "Sprint"
   label_all_but_total: "all except total"
-  label_add_pbi_at_bottom: "Add %{tracker} at product backlog top"
-  label_add_pbi_at_top: "Add %{tracker} at product backlog bottom"
+  label_add_pbi_at_bottom: "Add %{tracker} at product backlog bottom"
+  label_add_pbi_at_top: "Add %{tracker} at product backlog top"
   label_add_task: "Opens a pop-up windows to add a %{tracker} to this PBI"
   label_begin: "Begin"
   label_blocked: "Blocked"
@@ -38,6 +40,8 @@ en:
   label_create_subtask: "Create subtask"
   label_date_previous_to: "Previous to %{date}"
   label_doer: "Doer"
+  label_doer_reviewer_postit: "Doer/reviewer post-it"
+  label_doer_reviewer_postit_explanation: "Doer/reviewer post-it user custom field."
   label_done_effort: "Done effort"
   label_edit_effort: "Edit effort"
   label_edit_pbi: "Opens a pop-up window to edit the PBI"
@@ -97,16 +101,23 @@ en:
   label_setting_auto_update_pbi_status_explanation: "Change parent PBI status based on child tasks status."
   label_setting_blocked_custom_field: "Blocked custom field"
   label_setting_check_dependencies_on_pbi_sorting: "Check PBIs dependencies on sorting"
-  label_setting_clear_new_tasks_assignee: "Clear assignee for tasks in new status"
-  label_setting_create_journal_on_pbi_position_change: "Create journal on a product backlog item position change"
+  label_setting_clear_new_tasks_assignee: "Clear assignee for new tasks"
+  label_setting_create_journal_on_pbi_position_change: "Journal PBI position change"
+  label_setting_create_journal_on_pbi_position_change_explanation: "Create journal on a product backlog item position change."
+  label_setting_default_sprint_days: "Default first Sprint length"
+  label_setting_default_sprint_days_explanation: "Default first Sprint length in non working days (i.e. 5 for 1 week, 10 for 2 weeks...)."
+  label_setting_default_sprint_name: "Default first Sprint name"
+  label_setting_default_sprint_shared: "Default first Sprint shared"
+  label_setting_default_sprint_shared_explanation: "Share by default the first Sprint with child projects."
   label_setting_fields_on_tracker: "Fields to use with %{tracker}"
   label_setting_high_speed: "High speed percentage"
-  label_setting_inherit_pbi_attributes: "When creating a task inherit parent product backlog item attributes"
+  label_setting_inherit_pbi_attributes: "Inherit parent PBI attributes"
+  label_setting_inherit_pbi_attributes_explanation: "When creating a task inherit parent product backlog item attributes."
   label_setting_low_speed: "Low speed percentage"
   label_setting_lowest_speed: "Lowest speed percentage"
   label_setting_pbi_is_closed_if_tasks_are_closed: "PBI closed if children are closed"
   label_setting_pbi_is_closed_if_tasks_are_closed_explanation: "This does not change PBI status but affects Scrum plugin features (boards, burndowns...)."
-  label_setting_pbi_statuses: "PBI statuses for Product backlog & Sprint board"
+  label_setting_pbi_statuses: "PBI statuses for PB & Sprint"
   label_setting_product_burndown_extra_sprints: "Render extra Sprints for subprojects"
   label_setting_product_burndown_extra_sprints_explanation: "How many Sprints are rendered after tatol serie finishes (0 for unlimit)."
   label_setting_product_burndown_sprints: "Calculate it with this number of Sprints"
@@ -114,6 +125,7 @@ en:
   label_setting_random_postit_rotation: "Random post-it rotation"
   label_setting_remaining_story_points_custom_field: "Remaining story points custom field"
   label_setting_render_author_on_pbi: "Render author"
+  label_setting_render_assigned_to_on_pbi: "Render assigned to"
   label_setting_render_category_on_pbi: "Render category"
   label_setting_render_pbis_speed: "Render PBIs speed"
   label_setting_render_plugin_tips: "Render Scrum plugin tips"
@@ -128,7 +140,8 @@ en:
   label_setting_sprint_burndown_day_zero_explanation: "Use 'Begin' as an special date at the beginning of the Sprint burndown instead of 'End'."
   label_setting_story_points_custom_field: "Story points custom field"
   label_setting_task_statuses: "Task statuses for Sprint board"
-  label_setting_update_pbi_status_if_all_tasks_are_closed: "If all tasks are closed update PBI status to"
+  label_setting_update_pbi_status_if_all_tasks_are_closed: "Change PBI state if tasks are closed"
+  label_setting_update_pbi_status_if_all_tasks_are_closed_explanation: "Change to this PBI state if all tasks are closed."
   label_setting_use_remaining_story_points: "Use remaining SPs in PBIs"
   label_setting_use_remaining_story_points_explanation: "Update remaining SPs for PBIs day by day will calculate a more precise Sprint burndown by SPs."
   label_setting_verification_activities: "Verification activities"

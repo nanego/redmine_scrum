@@ -11,7 +11,18 @@
              pbi.editable? and !read_only -%>
         <%= link_to "", edit_pbi_path(pbi), :remote => true, :method => "GET",
                     :class => "icon icon-edit float-icon", :title => l(:label_edit_pbi) %>
-        <%- unless is_simple -%>
+        <%- if is_simple -%>
+          <%- if User.current.allowed_to?(:log_time, project) -%>
+            <%= link_to('',
+                        new_scrum_time_entry_path(pbi,
+                                                  :pbi_status_id => pbi_status_id,
+                                                  :other_pbi_status_ids => other_pbi_status_ids.join(','),
+                                                  :issue_id => pbi_id),
+                        :remote => true, :method => 'GET',
+                        :class => 'icon icon-log-time float-icon',
+                        :title => l(:button_log_time)) %>
+          <%- end -%>
+        <%- else -%>
           <%- Tracker.task_trackers.each do |tracker| -%>
             <%= link_to "", new_task_path(pbi, tracker), :remote => true, :method => "GET",
                         :class => "icon icon-add float-icon",
@@ -28,13 +39,8 @@
                  :locals => {:project => project, :issue => pbi} %>
       <%= render :partial => "post_its/sprint_board/custom_fields", :formats => [:html],
                  :locals => {:project => project, :issue => pbi} %>
-      <div class="doers-reviewers-post-its-container">
-        <%- if pbi.scrum_blocked? -%>
-          <div class="<%= Issue.blocked_post_it_css_class %>">
-            <%= l :label_blocked %>
-          </div>
-        <%- end -%>
-      </div>
+      <%= render :partial => "post_its/sprint_board/doers_reviewers", :formats => [:html],
+                 :locals => {:issue => pbi} %>
     </td>
   </tr>
   <tr>
@@ -50,14 +56,14 @@
     </td>
     <td class="spent">
       <%- if User.current.allowed_to?(:view_time_entries, project) -%>
-        <%= render_hours(pbi.total_time, :title => l(:label_total_effort),
-                         :ignore_zero => pbi.children.empty?) %>
+        <%= render_hours(pbi.spent_hours, :title => l(:label_spent_time), :ignore_zero => true,
+                         :link => project_time_entries_path(pbi.project, :issue_id => pbi.id)) %>
       <%- end -%>
     </td>
     <td class="pending">
       <%- if User.current.allowed_to?(:view_pending_effort, project) -%>
         <%= render_hours(pbi.pending_effort_children, :title => l(:field_pending_effort),
-                         :ignore_zero => pbi.children.empty?) %>
+                         :ignore_zero => pbi.is_complex_pbi?) %>
       <%- end -%>
     </td>
   </tr>
@@ -65,4 +71,5 @@
 <%= render :partial => 'post_its/sprint_board/pbi', :formats => [:js],
            :locals => {:project => project,
                        :pbi => pbi,
-                       :pbi_id => pbi_id} %>
+                       :pbi_id => pbi_id,
+                       :other_pbi_status_ids => defined?(other_pbi_status_ids) ? other_pbi_status_ids : []} %>

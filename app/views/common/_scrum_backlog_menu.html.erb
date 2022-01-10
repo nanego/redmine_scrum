@@ -12,9 +12,9 @@
                 :class => 'icon icon-release-plan') %>
   <%- end -%>
   <%- if User.current.allowed_to?(:manage_sprints, @project) and @product_backlog -%>
-    <%= link_to('', new_project_sprint_path(@project, :back_url => url_for(params), :create_product_backlog => true),
+    <%= link_to('', new_project_sprint_path(@project, :back_url => url_for(params.permit!), :create_product_backlog => true),
                 :class => 'icon icon-add', :title => l(:button_add)) %>
-    <%= link_to('', edit_sprint_path(@product_backlog, :back_url => url_for(params)),
+    <%= link_to('', edit_sprint_path(@product_backlog, :back_url => url_for(params.permit!)),
                 :class => 'icon icon-edit', :title => l(:button_edit)) %>
     <%= link_to('', sprint_path(@product_backlog),
                 {:method => :delete,

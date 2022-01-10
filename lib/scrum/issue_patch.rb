@@ -1,8 +1,8 @@
 # Copyright © Emilio González Montaña
-# Licence: Attribution & no derivates
+# Licence: Attribution & no derivatives
 #   * Attribution to the plugin web page URL should be done if you want to use it.
 #     https://redmine.ociotec.com/projects/redmine-plugin-scrum
-#   * No derivates of this plugin (or partial) are allowed.
+#   * No derivatives of this plugin (or partial) are allowed.
 # Take a look to licence.txt file at plugin root folder for further details.
 
 require_dependency 'issue'
@@ -14,8 +14,6 @@ module Scrum
 
         belongs_to :sprint
         has_many :pending_efforts, -> { order('date ASC') }
-
-        acts_as_list :scope => :sprint
 
         safe_attributes :sprint_id, :if => lambda { |issue, user|
           issue.project and issue.project.scrum? and user.allowed_to?(:edit_issues, issue.project)
@@ -49,6 +47,7 @@ module Scrum
             self.children.each do |task|
               if !task.closed?
                 closed = false
+                break # at least a task opened, no need to go further
               end
             end
           end
@@ -60,12 +59,11 @@ module Scrum
           closed_statuses = IssueStatus::closed_status_ids
           if self.closed?
             self.journals.order('created_on DESC').each do |journal|
-              if completed_date.nil?
-                journal.details.where(:prop_key => 'status_id',
-                                      :value => closed_statuses).each do |detail|
-                  completed_date = journal.created_on
-                end
+              journal.details.where(:prop_key => 'status_id',
+                                    :value => closed_statuses).each do |detail|
+                completed_date = journal.created_on
               end
+              break unless completed_date.nil?
             end
           end
           if self.is_pbi? and self.children.any? and
@@ -154,15 +152,18 @@ module Scrum
         end
 
         def is_pbi?
-          tracker.is_pbi?
+          self.tracker.is_pbi?
+        end
+
+        def is_complex_pbi?
+          self.is_pbi? and not self.is_simple_pbi?
         end
 
         def is_simple_pbi?
-          is_pbi? and
+          self.is_pbi? and
           !((custom_field_id = Scrum::Setting.simple_pbi_custom_field_id).nil?) and
           !((custom_value = self.custom_value_for(custom_field_id)).nil?) and
-          (custom_value.value == '1') and
-          self.children.empty?
+          (custom_value.value == '1')
         end
 
         def is_task?
@@ -193,14 +194,30 @@ module Scrum
           users.concat(time_entries.collect{|t| t.user}).uniq.sort
         end
 
+        def sortable?()
+          is_sortable = false
+          if is_pbi? and editable? and sprint and
+             ((User.current.allowed_to?(:edit_product_backlog, project) and (sprint.is_product_backlog?)) or
+              (User.current.allowed_to?(:edit_sprint_board, project) and (!(sprint.is_product_backlog?))))
+            is_sortable = true
+          elsif is_task? and editable? and sprint and
+                User.current.allowed_to?(:edit_sprint_board, project) and !sprint.is_product_backlog?
+            is_sortable = true
+          end
+          return is_sortable
+        end
+
         def post_it_css_class(options = {})
           classes = ['post-it', 'big-post-it', tracker.post_it_css_class]
           if is_pbi?
             classes << 'sprint-pbi'
-            if options[:draggable] and editable? and sprint and
-               ((User.current.allowed_to?(:edit_product_backlog, project) and (sprint.is_product_backlog?)) or
-                (User.current.allowed_to?(:edit_sprint_board, project) and (!(sprint.is_product_backlog?))))
-              classes << 'post-it-vertical-move-cursor'
+            if options[:draggable] and editable? and sprint
+              if User.current.allowed_to?(:edit_product_backlog, project) and sprint.is_product_backlog?
+                classes << 'post-it-vertical-move-cursor'
+              elsif User.current.allowed_to?(:edit_sprint_board, project) and !(sprint.is_product_backlog?) and
+                    is_simple_pbi?
+                classes << 'post-it-horizontal-move-cursor'
+              end
             end
           elsif is_task?
             classes << 'sprint-task'
@@ -227,20 +244,20 @@ module Scrum
         end
 
         def has_pending_effort?
-          is_task? and pending_efforts.any?
+          self.is_task? and self.pending_efforts.any?
         end
 
         def pending_effort
           value = nil
-          if self.is_task? and self.has_pending_effort?
-            value = pending_efforts.last.effort
+          if self.has_pending_effort?
+            value = self.pending_efforts.last.effort
           elsif self.is_pbi?
             if Scrum::Setting.use_remaining_story_points?
               if self.has_remaining_story_points?
-                value = pending_efforts.last.effort
+                value = self.pending_efforts.last.effort
               end
             else
-              value = self.children.collect{|task| task.pending_effort}.compact.sum
+              value = self.pending_effort_children
             end
           end
           return value
@@ -248,7 +265,7 @@ module Scrum
 
         def pending_effort_children
           value = nil
-          if self.is_pbi? and self.children.any?
+          if self.is_complex_pbi? and self.children.any?
             value = self.children.collect{|task| task.pending_effort}.compact.sum
           end
           return value
@@ -318,16 +335,23 @@ module Scrum
         end
 
         def total_time
-          if self.is_pbi?
-            the_pending_effort = self.pending_effort_children
-            the_spent_hours = self.children.collect{|task| task.spent_hours}.compact.sum
-          elsif self.is_task?
-            the_pending_effort = self.pending_effort
-            the_spent_hours = self.spent_hours
+          # Cache added
+          unless defined?(@total_time)
+            if self.is_simple_pbi?
+              the_pending_effort = self.pending_effort
+              the_spent_hours = self.spent_hours
+            elsif self.is_pbi?
+              the_pending_effort = self.pending_effort_children
+              the_spent_hours = self.children.collect{|task| task.spent_hours}.compact.sum
+            elsif self.is_task?
+              the_pending_effort = self.pending_effort
+              the_spent_hours = self.spent_hours
+            end
+            the_pending_effort = the_pending_effort.nil? ? 0.0 : the_pending_effort
+            the_spent_hours = the_spent_hours.nil? ? 0.0 : the_spent_hours
+            @total_time = (the_pending_effort + the_spent_hours)
           end
-          the_pending_effort = the_pending_effort.nil? ? 0.0 : the_pending_effort
-          the_spent_hours = the_spent_hours.nil? ? 0.0 : the_spent_hours
-          return (the_pending_effort + the_spent_hours)
+          return @total_time
         end
 
         def speed
@@ -352,10 +376,6 @@ module Scrum
               !((value = custom_value.value).blank?)
             return (value == '1')
           end
-        end
-
-        def self.blocked_post_it_css_class
-          return doer_or_reviewer_post_it_css_class(:blocked)
         end
 
         def move_pbi_to(position, other_pbi_id = nil)
@@ -434,14 +454,17 @@ module Scrum
           return dependencies
         end
 
-        def check_bad_dependencies
+        def check_bad_dependencies(raise_exception = true)
+          message = nil
           if Scrum::Setting.check_dependencies_on_pbi_sorting
             dependencies = get_dependencies
             if dependencies.count > 0
               others = dependencies.collect{ |issue| "##{issue.id}" }.join(', ')
-              raise "##{id} depends on other issues (#{others}), it cannot be sorted"
+              message = l(:error_sorting_other_issues_depends_on_issue, :id => id, :others => others)
             end
           end
+          raise message if !(message.nil?) and raise_exception
+          return message
         end
 
       protected
@@ -503,7 +526,10 @@ module Scrum
               pbi.children.each do |task|
                 if task.is_task?
                   task = self if task.id == self.id
-                  all_tasks_new = false if task.status != new_status
+                  if task.status != new_status
+                    all_tasks_new = false
+                    break # at least a task not new, no need to go further
+                  end
                 end
               end
               if pbi.status == new_status and !all_tasks_new
@@ -534,7 +560,10 @@ module Scrum
             pbi.children.each do |task|
               if task.is_task?
                 task = self if task.id == self.id
-                all_tasks_closed = false unless task.closed?
+                unless task.closed?
+                  all_tasks_closed = false
+                  break # at least a task opened, no need to go further
+                end
               end
             end
             if all_tasks_closed and pbi.status != pbi_status_to_set
@@ -551,7 +580,7 @@ module Scrum
           min = nil
           unless sprint.nil?
             sprint.pbis.each do |pbi|
-              min = pbi.position if min.nil? or (pbi.position < min)
+              min = pbi.position if min.nil? or ((!pbi.position.nil?) and (pbi.position < min))
             end
           end
           return min
@@ -561,7 +590,7 @@ module Scrum
           max = nil
           unless sprint.nil?
             sprint.pbis.each do |pbi|
-              max = pbi.position if max.nil? or (pbi.position > max)
+              max = pbi.position if max.nil? or ((!pbi.position.nil?) and (pbi.position > max))
             end
           end
           return max
@@ -610,9 +639,6 @@ module Scrum
             when :reviewer
               classes << 'reviewer-post-it'
               classes << Scrum::Setting.reviewer_color
-            when :blocked
-              classes << 'blocked-post-it'
-              classes << Scrum::Setting.blocked_color
           end
           if Scrum::Setting.random_posit_rotation
             classes << "post-it-rotation-#{rand(5)}"
